@@ -1,0 +1,13 @@
+{
+  "name": "aipolicybot",
+  "version": "1.0.0",
+  "description": "AI-powered insurance policy clarity engine",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}
