@@ -80,34 +80,76 @@
             </h1>
             <p class="text-lg text-text-muted max-w-xl mx-auto">Upload any policy document. AI extracts risks, coverage gaps, and critical clauses in seconds.</p>
         </div>
-        <div class="w-full glass-panel rounded-xl p-3 shadow-2xl shadow-black/50">
-            <div id="dropzone" class="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center gap-4 transition-all hover:border-text-dark cursor-pointer group relative" onclick="document.getElementById('fileInput').click()">
-                <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg">
-                <div id="uploadDefault" class="flex flex-col items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-surfaceElevated flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-cloud-arrow-up text-xl text-text-muted group-hover:text-primary transition-colors"></i>
+        <div class="w-full glass-panel rounded-xl p-4 shadow-2xl shadow-black/50">
+            <!-- TABS -->
+            <div class="flex gap-1 mb-4 bg-surface rounded-lg p-1 border border-border">
+                <button id="tabUpload" onclick="switchTab('upload')" class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-all bg-surfaceElevated text-text-main border border-border">
+                    <i class="fa-solid fa-cloud-arrow-up text-primary text-xs"></i> Upload File
+                </button>
+                <button id="tabPaste" onclick="switchTab('paste')" class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-all text-text-muted hover:text-text-main">
+                    <i class="fa-solid fa-clipboard text-xs"></i> Paste Text
+                </button>
+            </div>
+
+            <!-- UPLOAD TAB -->
+            <div id="panelUpload">
+                <div id="dropzone" class="border-2 border-dashed border-border rounded-lg p-8 flex flex-col items-center justify-center gap-4 transition-all hover:border-text-dark cursor-pointer group relative" onclick="document.getElementById('fileInput').click()">
+                    <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg">
+                    <div id="uploadDefault" class="flex flex-col items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-surfaceElevated flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl text-text-muted group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-base font-medium">Drag & drop policy document</p>
+                            <p class="text-sm text-text-muted mt-1">PDF, DOCX, TXT or Images</p>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <p class="text-base font-medium">Drag & drop policy document</p>
-                        <p class="text-sm text-text-muted mt-1">PDF, DOCX, TXT or Images</p>
+                    <div id="fileLoadedState" class="hidden flex-col items-center gap-2">
+                        <div class="flex items-center gap-3 px-4 py-2.5 bg-primary/10 border border-primary/30 rounded-lg">
+                            <i class="fa-solid fa-file-lines text-primary"></i>
+                            <span class="text-sm font-medium text-primary" id="fileNameDisplay">—</span>
+                            <span class="text-xs text-text-muted" id="fileSizeDisplay">—</span>
+                        </div>
+                        <p class="text-xs text-primary">✓ Document analysed — open chat to ask questions</p>
                     </div>
-                </div>
-                <div id="fileLoadedState" class="hidden flex-col items-center gap-2">
-                    <div class="flex items-center gap-3 px-4 py-2.5 bg-primary/10 border border-primary/30 rounded-lg">
-                        <i class="fa-solid fa-file-lines text-primary"></i>
-                        <span class="text-sm font-medium text-primary" id="fileNameDisplay">—</span>
-                        <span class="text-xs text-text-muted" id="fileSizeDisplay">—</span>
-                    </div>
-                    <p class="text-xs text-primary">✓ Document analysed — open chat to ask questions</p>
                 </div>
             </div>
-            <div id="progressBar" class="hidden mt-2 px-1 pb-1">
+
+            <!-- PASTE TAB -->
+            <div id="panelPaste" class="hidden">
+                <div class="flex flex-col gap-3">
+                    <div class="relative">
+                        <textarea id="pasteInput" placeholder="Paste your policy text here...
+
+Copy text from your insurance document, email, or any source and paste it here. The AI will analyse it immediately." class="w-full bg-surface border border-border rounded-lg p-4 text-sm text-text-main placeholder-text-dark focus:outline-none focus:border-primary/50 resize-none leading-relaxed" style="height:180px;"></textarea>
+                        <div class="absolute bottom-3 right-3 text-xs text-text-dark" id="charCount">0 chars</div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="text-xs text-text-muted flex items-center gap-1.5">
+                            <i class="fa-solid fa-lock text-primary/60 text-xs"></i>
+                            AI only uses what you paste — no outside knowledge
+                        </p>
+                        <button onclick="handlePaste()" class="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-background font-semibold rounded-lg text-sm transition-all upgrade-glow shrink-0">
+                            <i class="fa-solid fa-bolt text-xs"></i> Analyse
+                        </button>
+                    </div>
+                    <div id="pasteLoadedState" class="hidden items-center gap-3 px-4 py-2.5 bg-primary/10 border border-primary/30 rounded-lg">
+                        <i class="fa-solid fa-check-circle text-primary"></i>
+                        <span class="text-sm font-medium text-primary">Text analysed</span>
+                        <span class="text-xs text-text-muted" id="pasteCharDisplay">—</span>
+                        <button onclick="clearPaste()" class="ml-auto text-xs text-text-muted hover:text-text-main transition-colors"><i class="fa-solid fa-rotate-left mr-1"></i>Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div id="progressBar" class="hidden mt-3 px-1">
                 <div class="h-1 bg-border rounded-full overflow-hidden">
                     <div id="progressFill" class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300" style="width:0%"></div>
                 </div>
                 <p class="text-xs text-text-muted mt-1.5 flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse inline-block"></span>
-                    <span id="progressLabel">Analysing document...</span>
+                    <span id="progressLabel">Analysing...</span>
                 </p>
             </div>
         </div>
@@ -489,6 +531,63 @@ function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function fmtMsg(t){return esc(t).replace(/⚠️/g,'<span style="color:#F59E0B">⚠️</span>').replace(/✓/g,'<span style="color:#10B981">✓</span>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
 
 document.getElementById('chatInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
+
+// ─── TAB SWITCHING ────────────────────────────────────────────
+function switchTab(tab) {
+    const isUpload = tab === 'upload';
+    document.getElementById('panelUpload').classList.toggle('hidden', !isUpload);
+    document.getElementById('panelPaste').classList.toggle('hidden', isUpload);
+    // Active tab styles
+    const tabUpload = document.getElementById('tabUpload');
+    const tabPaste = document.getElementById('tabPaste');
+    if (isUpload) {
+        tabUpload.classList.add('bg-surfaceElevated','text-text-main','border','border-border');
+        tabUpload.classList.remove('text-text-muted');
+        tabPaste.classList.remove('bg-surfaceElevated','text-text-main','border','border-border');
+        tabPaste.classList.add('text-text-muted');
+    } else {
+        tabPaste.classList.add('bg-surfaceElevated','text-text-main','border','border-border');
+        tabPaste.classList.remove('text-text-muted');
+        tabUpload.classList.remove('bg-surfaceElevated','text-text-main','border','border-border');
+        tabUpload.classList.add('text-text-muted');
+        document.getElementById('pasteInput').focus();
+    }
+}
+
+// ─── PASTE HANDLING ───────────────────────────────────────────
+document.getElementById('pasteInput').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = this.value.length.toLocaleString() + ' chars';
+});
+
+function handlePaste() {
+    const text = document.getElementById('pasteInput').value.trim();
+    if (!text || text.length < 50) {
+        document.getElementById('pasteInput').style.borderColor = '#F59E0B';
+        document.getElementById('pasteInput').placeholder = 'Please paste at least 50 characters of policy text...';
+        setTimeout(() => { document.getElementById('pasteInput').style.borderColor = ''; }, 2000);
+        return;
+    }
+    policyText = text;
+    // Show loaded state
+    document.getElementById('pasteInput').classList.add('hidden');
+    const ls = document.getElementById('pasteLoadedState');
+    ls.classList.remove('hidden'); ls.classList.add('flex');
+    document.getElementById('pasteCharDisplay').textContent = text.length.toLocaleString() + ' characters';
+    document.getElementById('usagePips').classList.remove('hidden');
+    analyseDocument();
+}
+
+function clearPaste() {
+    policyText = '';
+    document.getElementById('pasteInput').value = '';
+    document.getElementById('pasteInput').classList.remove('hidden');
+    document.getElementById('pasteInput').style.borderColor = '';
+    const ls = document.getElementById('pasteLoadedState');
+    ls.classList.add('hidden'); ls.classList.remove('flex');
+    document.getElementById('charCount').textContent = '0 chars';
+    document.getElementById('docTitle').textContent = 'Upload a document to begin';
+    setStatus('No document loaded', '#2A2D35');
+}
 document.getElementById('chatInput').addEventListener('input', function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 </script>
 </body>
