@@ -1,490 +1,460 @@
-import { useState, useRef, useEffect } from “react”;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIPolicyBot — Insurance Clarity Engine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0B0C10;color:#F3F4F6;font-family:'Inter',sans-serif;min-height:100vh}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#2A2D35;border-radius:4px}
+  .glass{background:rgba(18,20,26,0.82);backdrop-filter:blur(14px);border:1px solid rgba(42,45,53,0.9)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+  @keyframes scan{0%{top:-2px}100%{top:100%}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes popIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+  .d1{animation:blink 1.2s infinite 0s}.d2{animation:blink 1.2s infinite .2s}.d3{animation:blink 1.2s infinite .4s}
+  .scan-bar{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#10B981,transparent);animation:scan 1.6s ease-in-out infinite}
+  .fade-up{animation:fadeUp .4s ease both}
+  .pop-in{animation:popIn .28s cubic-bezier(.34,1.4,.64,1) both}
+  #chatWin{transition:all .3s cubic-bezier(.34,1.2,.64,1);transform-origin:bottom right}
+  #chatWin.closed{opacity:0;pointer-events:none;transform:scale(.92) translateY(16px)}
+  #chatWin.open{opacity:1;pointer-events:all;transform:scale(1) translateY(0)}
+  .insight{animation:fadeUp .35s ease both}
+  .drag-over{border-color:#10B981!important;background:rgba(16,185,129,.04)!important}
+</style>
+</head>
+<body style="background:radial-gradient(circle at 50% 0%,rgba(16,185,129,.1) 0%,rgba(11,12,16,0) 55%) #0B0C10">
 
-const DEMO_RESULT = {
-title: “Commercial Property & Liability Policy — 2025”,
-exclusions: [
-{ title: “Cyber Liability Exclusion”, detail: “Policy explicitly excludes any damages arising from data breaches, ransomware attacks, or unauthorised access to electronic systems. Section IV, Clause 2(b).”, risk: “high” },
-{ title: “Flood & Water Damage”, detail: “Surface water, ground water, and flood damage from external sources are excluded unless a separate Flood Endorsement is attached. Section III, Clause 7.”, risk: “high” },
-{ title: “Intentional Acts”, detail: “No coverage for bodily injury or property damage expected or intended from the standpoint of the insured. Section II, Exclusion A.”, risk: “medium” },
-{ title: “Pollution Liability Limitation”, detail: “Coverage limited to sudden and accidental incidents discovered within 72 hours. Gradual pollution events are fully excluded.”, risk: “medium” },
-],
-coverage: [
-{ item: “General Liability”, status: “covered” },
-{ item: “Property Damage”, status: “covered” },
-{ item: “Business Interruption”, status: “covered” },
-{ item: “Employer Liability”, status: “covered” },
-{ item: “Product Liability”, status: “partial” },
-{ item: “Cyber & Data Breach”, status: “gap” },
-{ item: “Flood Damage”, status: “gap” },
-],
-keyFacts: [
-“Policy period: 1 January 2025 – 31 December 2025”,
-“Per occurrence limit: $2,500,000”,
-“Annual aggregate limit: $5,000,000”,
-“Standard deductible: $2,500 per claim”,
-“Claims must be reported within 14 days of incident”,
-“30-day notice required for material operational changes”,
-],
-actions: [
-{ title: “Add Cyber Liability Rider”, detail: “Significant digital exposure identified but cyber incidents are fully excluded. A standalone cyber policy is strongly recommended.” },
-{ title: “Purchase Flood Endorsement”, detail: “Property may be at risk. Current policy provides zero flood protection without a separate endorsement.” },
-{ title: “Review Aggregate Limits”, detail: “Current $5M annual aggregate may be insufficient if multiple claims occur in the same policy year.” },
-],
-};
-
-const DEMO_CHAT = {
-cover: `Based on your policy, the following are confirmed:\n\n✓ **General Liability** — up to $2.5M per occurrence for third-party bodily injury and property damage.\n\n✓ **Business Interruption** — loss of income if operations are suspended due to an insured event, subject to a 72-hour waiting period.\n\n✓ **Property Damage** — covers the building, contents and equipment at the insured premises.\n\n✓ **Employer Liability** — covers claims from employees for work-related injury or illness.\n\n⚠️ Note: Cyber incidents and flood damage are **not** covered under this policy.`,
-exclusion: `Your policy contains several significant exclusions:\n\n⚠️ **Cyber Liability** — Section IV, Clause 2(b) explicitly excludes all data breaches, ransomware, and unauthorised system access. This is a high-risk gap.\n\n⚠️ **Flood & Surface Water** — External flood damage is excluded unless a separate Flood Endorsement is purchased.\n\n⚠️ **Intentional Acts** — No coverage for damage intentionally caused by or at the direction of the insured.\n\n⚠️ **Gradual Pollution** — Only sudden accidental pollution within 72 hours is covered.`,
-limit: `Your policy coverage limits are:\n\n💰 **Per Occurrence Limit** — $2,500,000 maximum payout per single incident.\n\n💰 **Annual Aggregate** — $5,000,000 total across all claims in the policy year.\n\n💰 **Deductible** — $2,500 applies to each claim before the insurer pays.\n\n💰 **Business Interruption** — Covered up to 12 months of lost revenue, with a 72-hour waiting period.`,
-claim: `Based on your policy, the claims process requires:\n\n1. **Report within 14 days** — Claims must be notified within 14 days. Late notification may result in a declined claim.\n\n2. **Written notification** — Submit written notice including date, location, description of loss, and any third-party details.\n\n3. **Preserve evidence** — Do not dispose of damaged property until the insurer has inspected.\n\n4. **Cooperate with investigation** — You are required to assist with any investigation carried out by the insurer.`,
-summary: `Here's a plain English summary:\n\n📋 **What it is** — A commercial policy covering your business premises, liability to third parties, and loss of income.\n\n✓ **What's protected** — Third-party injury at your premises, accidental property damage, fire stopping you from trading.\n\n⚠️ **The big gaps** — Hacking, data breaches, and flooding are not covered at all.\n\n💰 **The numbers** — You pay the first $2,500 of any claim. Maximum $5M per year total.\n\n📅 **Expires** — 31 December 2025.`,
-};
-
-function getDemoResponse(q) {
-const ql = q.toLowerCase();
-if (ql.includes(“cover”) || ql.includes(“what”)) return DEMO_CHAT.cover;
-if (ql.includes(“exclusion”) || ql.includes(“exclud”) || ql.includes(“not cover”)) return DEMO_CHAT.exclusion;
-if (ql.includes(“limit”) || ql.includes(“amount”) || ql.includes(“much”) || ql.includes(“pay”)) return DEMO_CHAT.limit;
-if (ql.includes(“claim”) || ql.includes(“report”)) return DEMO_CHAT.claim;
-if (ql.includes(“summary”) || ql.includes(“overview”) || ql.includes(“plain”)) return DEMO_CHAT.summary;
-if (ql.includes(“cyber”) || ql.includes(“hack”) || ql.includes(“data”)) return “⚠️ **Cyber liability is explicitly excluded** under Section IV, Clause 2(b). This covers data breaches, ransomware, and unauthorised system access. You would need a separate standalone cyber insurance policy.”;
-if (ql.includes(“flood”) || ql.includes(“water”)) return “⚠️ **Flood damage is excluded** unless a separate Flood Endorsement is attached. Surface water and groundwater damage are not covered under standard policy terms (Section III, Clause 7).”;
-if (ql.includes(“excess”) || ql.includes(“deductible”)) return “✓ Your policy has a **standard excess of $2,500 per claim**. You pay the first $2,500 of any loss before the insurer’s coverage applies.”;
-if (ql.includes(“employee”) || ql.includes(“staff”) || ql.includes(“theft”)) return “⚠️ **Employee theft is not covered** under this policy. You would need a separate Commercial Crime policy or Employee Dishonesty Endorsement.”;
-if (ql.includes(“expir”) || ql.includes(“renew”) || ql.includes(“date”)) return “✓ Your policy runs from **1 January 2025 to 31 December 2025**. Renewal should be initiated at least 30 days before expiry.”;
-return `Based on this policy, I can see it's a Commercial Property & Liability policy with a $2.5M per-occurrence limit. The specific detail about "${q}" is not explicitly addressed in the sections available. I'd recommend checking Section V of the full policy or consulting your broker.`;
-}
-
-const SCAN_STEPS = [
-“Reading policy structure…”,
-“Extracting clauses and sections…”,
-“Identifying coverage terms…”,
-“Flagging exclusions…”,
-“Running risk analysis…”,
-“Generating insights…”,
-];
-
-function formatMsg(text) {
-return text.split(”\n”).map((line, i) => {
-const bold = line.replace(/**(.*?)**/g, (_, m) => `<strong>${m}</strong>`);
-return <p key={i} className=“mb-1 last:mb-0” dangerouslySetInnerHTML={{ __html: bold }} />;
-});
-}
-
-const riskColor = { high: “#F59E0B”, medium: “#3B82F6”, low: “#4B5563” };
-const statusColor = { covered: “#10B981”, gap: “#F59E0B”, partial: “#3B82F6” };
-const statusIcon = { covered: “✓”, gap: “✗”, partial: “~” };
-
-export default function App() {
-const [phase, setPhase] = useState(“idle”); // idle | scanning | done
-const [scanStep, setScanStep] = useState(0);
-const [progress, setProgress] = useState(0);
-const [fileName, setFileName] = useState(””);
-const [activeTab, setActiveTab] = useState(“upload”);
-const [pasteText, setPasteText] = useState(””);
-const [chatOpen, setChatOpen] = useState(false);
-const [messages, setMessages] = useState([{ role: “bot”, text: “👋 Upload a policy document to get started. I’ll only answer from what’s written in your document.” }]);
-const [input, setInput] = useState(””);
-const [isTyping, setIsTyping] = useState(false);
-const [questionsUsed, setQuestionsUsed] = useState(0);
-const [isPremium, setIsPremium] = useState(false);
-const [showPaywall, setShowPaywall] = useState(false);
-const [selectedPlan, setSelectedPlan] = useState(“annual”);
-const [isDragging, setIsDragging] = useState(false);
-const FREE_LIMIT = 3;
-const chatBottom = useRef(null);
-const fileInput = useRef(null);
-
-useEffect(() => { chatBottom.current?.scrollIntoView({ behavior: “smooth” }); }, [messages, isTyping]);
-
-// Scan animation
-useEffect(() => {
-if (phase !== “scanning”) return;
-let step = 0;
-const stepTimer = setInterval(() => {
-step++;
-if (step < SCAN_STEPS.length) setScanStep(step);
-}, 650);
-let prog = 0;
-const progTimer = setInterval(() => {
-prog += Math.random() * 7;
-if (prog >= 88) { prog = 88; clearInterval(progTimer); }
-setProgress(prog);
-}, 200);
-const doneTimer = setTimeout(() => {
-clearInterval(stepTimer);
-setProgress(100);
-setTimeout(() => {
-setPhase(“done”);
-setChatOpen(true);
-setMessages(prev => […prev, { role: “bot”, text: “I’ve analysed your Commercial Property & Liability Policy. I can see several areas of concern — particularly around cyber liability and flood coverage. What would you like to explore first?” }]);
-}, 400);
-}, 4200);
-return () => { clearInterval(stepTimer); clearInterval(progTimer); clearTimeout(doneTimer); };
-}, [phase]);
-
-function handleFile(file) {
-if (!file) return;
-setFileName(file.name);
-setPhase(“scanning”);
-setScanStep(0);
-setProgress(0);
-}
-
-function handlePaste() {
-if (!pasteText.trim() || pasteText.length < 30) return;
-setFileName(“Pasted text”);
-setPhase(“done”);
-setChatOpen(true);
-setMessages(prev => […prev, { role: “bot”, text: “Text loaded. I’ll answer questions based on what you’ve pasted.” }]);
-}
-
-async function sendMessage(text) {
-const q = text || input.trim();
-if (!q) return;
-if (!isPremium && questionsUsed >= FREE_LIMIT) { setShowPaywall(true); return; }
-if (phase === “idle”) { setMessages(prev => […prev, { role: “bot”, text: “Please upload a policy document first.” }]); return; }
-
-```
-setInput("");
-setMessages(prev => [...prev, { role: "user", text: q }]);
-setIsTyping(true);
-setQuestionsUsed(n => n + 1);
-
-const delay = 700 + Math.random() * 900;
-setTimeout(() => {
-  setIsTyping(false);
-  const reply = getDemoResponse(q);
-  setMessages(prev => [...prev, { role: "bot", text: reply }]);
-  const newUsed = questionsUsed + 1;
-  if (!isPremium && newUsed >= FREE_LIMIT) setTimeout(() => setShowPaywall(true), 900);
-}, delay);
-```
-
-}
-
-const left = Math.max(0, FREE_LIMIT - questionsUsed);
-
-return (
-<div style={{ background: “#0B0C10”, minHeight: “100vh”, fontFamily: “‘Inter’, sans-serif”, color: “#F3F4F6” }}>
-<style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); * { box-sizing: border-box; margin: 0; padding: 0; } ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: #2A2D35; border-radius: 4px; } @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} } @keyframes blink { 0%,80%,100%{opacity:0.2;transform:scale(0.8);} 40%{opacity:1;transform:scale(1);} } @keyframes scanLine { from{top:0;} to{top:100%;} } @keyframes fadeUp { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} } @keyframes slideIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} } @keyframes modalIn { from{opacity:0;transform:scale(0.94);} to{opacity:1;transform:scale(1);} } .dot1{animation:blink 1.2s infinite 0s;} .dot2{animation:blink 1.2s infinite 0.2s;} .dot3{animation:blink 1.2s infinite 0.4s;} .scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#10B981,transparent);animation:scanLine 1.6s ease-in-out infinite;} .fade-up{animation:fadeUp 0.4s ease both;} .msg-in{animation:slideIn 0.25s ease both;} .insight-in{animation:fadeUp 0.35s ease both;} .modal-in{animation:modalIn 0.28s cubic-bezier(0.34,1.4,0.64,1) both;} .glass{background:rgba(18,20,26,0.8);backdrop-filter:blur(14px);border:1px solid rgba(42,45,53,0.9);} .upgrade-btn{box-shadow:0 0 18px rgba(16,185,129,0.35);} .upgrade-btn:hover{box-shadow:0 0 28px rgba(16,185,129,0.55);} .plan-card{border:1px solid #2A2D35;border-radius:12px;padding:16px;cursor:pointer;transition:border-color 0.2s;} .plan-card:hover{border-color:#3B82F6;} .plan-annual{border-color:rgba(245,200,66,0.45);background:rgba(245,200,66,0.04);} button{cursor:pointer;} textarea:focus,input:focus{outline:none;}`}</style>
-
-```
-  {/* HEADER */}
-  <header className="glass" style={{ position: "sticky", top: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 64, borderTop: "none", borderLeft: "none", borderRight: "none" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontSize: 14 }}>🛡</span>
+<!-- HEADER -->
+<header class="glass" style="position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;border-top:none;border-left:none;border-right:none">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;font-size:15px">🛡</div>
+    <span style="font-weight:700;font-size:17px;letter-spacing:-.3px">AIPolicyBot</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div id="pipBox" style="display:none;align-items:center;gap:8px;padding:5px 14px;border-radius:20px;background:#12141A;border:1px solid #2A2D35">
+      <div style="display:flex;gap:5px">
+        <div id="p1" style="width:9px;height:9px;border-radius:50%;background:#2A2D35;transition:all .3s"></div>
+        <div id="p2" style="width:9px;height:9px;border-radius:50%;background:#2A2D35;transition:all .3s"></div>
+        <div id="p3" style="width:9px;height:9px;border-radius:50%;background:#2A2D35;transition:all .3s"></div>
       </div>
-      <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: "-0.3px" }}>AIPolicyBot</span>
+      <span id="pipLabel" style="font-size:12px;color:#9CA3AF">3 free left</span>
     </div>
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      {phase !== "idle" && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: "#12141A", border: "1px solid #2A2D35" }}>
-          <div style={{ display: "flex", gap: 5 }}>
-            {[0,1,2].map(i => (
-              <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", transition: "all 0.3s", background: isPremium ? "#10B981" : i < questionsUsed ? (questionsUsed >= FREE_LIMIT ? "#F59E0B" : "#10B981") : "#2A2D35", boxShadow: (isPremium || (i < questionsUsed && questionsUsed < FREE_LIMIT)) ? "0 0 8px rgba(16,185,129,0.6)" : "none" }} />
-            ))}
-          </div>
-          <span style={{ fontSize: 13, color: "#9CA3AF" }}>{isPremium ? "Unlimited ∞" : left > 0 ? `${left} free left` : "Limit reached"}</span>
-        </div>
-      )}
-      <button onClick={() => setShowPaywall(true)} className="upgrade-btn" style={{ padding: "8px 16px", background: "#10B981", color: "#0B0C10", fontWeight: 700, borderRadius: 8, fontSize: 13, border: "none", transition: "all 0.2s" }}>
-        Upgrade Plan
-      </button>
-    </div>
-  </header>
+    <button onclick="showWall()" style="padding:7px 16px;background:#10B981;color:#0B0C10;font-weight:700;border-radius:8px;font-size:13px;border:none;box-shadow:0 0 16px rgba(16,185,129,.35);cursor:pointer;font-family:inherit">Upgrade Plan</button>
+  </div>
+</header>
 
-  <main style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 20px 80px" }}>
+<main style="max-width:1080px;margin:0 auto;padding:36px 16px 100px">
 
-    {/* HERO */}
-    <div className="fade-up" style={{ textAlign: "center", marginBottom: 40 }}>
-      <h1 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.5px", marginBottom: 12 }}>
-        Understand your insurance.<br />
-        <span style={{ background: "linear-gradient(90deg, #10B981, #3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Instantly.</span>
-      </h1>
-      <p style={{ color: "#9CA3AF", fontSize: 16, maxWidth: 480, margin: "0 auto" }}>Upload any policy document. AI extracts risks, coverage gaps, and critical clauses in seconds.</p>
+  <!-- HERO -->
+  <div class="fade-up" style="text-align:center;margin-bottom:32px">
+    <h1 style="font-size:clamp(26px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-.5px;margin-bottom:10px">
+      Understand your insurance.<br>
+      <span style="background:linear-gradient(90deg,#10B981,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Instantly.</span>
+    </h1>
+    <p style="color:#9CA3AF;font-size:15px;max-width:460px;margin:0 auto">Upload any policy document. AI extracts risks, coverage gaps and critical clauses in seconds.</p>
+  </div>
+
+  <!-- UPLOAD CARD -->
+  <div class="glass fade-up" style="border-radius:16px;padding:16px;max-width:680px;margin:0 auto 32px">
+
+    <!-- TABS -->
+    <div style="display:flex;gap:4px;background:#12141A;border-radius:10px;padding:4px;border:1px solid #2A2D35;margin-bottom:14px">
+      <button id="tabUp" onclick="switchTab('up')" style="flex:1;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:600;border:1px solid #2A2D35;background:#1A1C23;color:#F3F4F6;transition:all .2s;font-family:inherit;cursor:pointer">☁️ Upload File</button>
+      <button id="tabPaste" onclick="switchTab('paste')" style="flex:1;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:600;border:1px solid transparent;background:transparent;color:#9CA3AF;transition:all .2s;font-family:inherit;cursor:pointer">📋 Paste Text</button>
     </div>
 
-    {/* UPLOAD PANEL */}
-    <div className="glass fade-up" style={{ borderRadius: 16, padding: 16, marginBottom: 32, maxWidth: 700, margin: "0 auto 32px" }}>
-      {/* TABS */}
-      <div style={{ display: "flex", gap: 4, background: "#12141A", borderRadius: 10, padding: 4, border: "1px solid #2A2D35", marginBottom: 16 }}>
-        {["upload", "paste"].map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} style={{ flex: 1, padding: "8px 12px", borderRadius: 8, fontSize: 13, fontWeight: 600, border: activeTab === tab ? "1px solid #2A2D35" : "1px solid transparent", background: activeTab === tab ? "#1A1C23" : "transparent", color: activeTab === tab ? "#F3F4F6" : "#9CA3AF", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-            {tab === "upload" ? <><span>☁️</span> Upload File</> : <><span>📋</span> Paste Text</>}
-          </button>
-        ))}
-      </div>
+    <!-- UPLOAD TAB -->
+    <div id="panelUp">
+      <div id="dropzone" onclick="document.getElementById('fileIn').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0])"
+        style="border:2px dashed #2A2D35;border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;min-height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+        <input id="fileIn" type="file" style="display:none" accept=".pdf,.doc,.docx,.txt,.png,.jpg" onchange="handleFile(this.files[0])">
 
-      {/* UPLOAD TAB */}
-      {activeTab === "upload" && (
-        <div
-          onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={e => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
-          onClick={() => phase === "idle" && fileInput.current?.click()}
-          style={{ border: `2px dashed ${isDragging ? "#10B981" : "#2A2D35"}`, borderRadius: 12, padding: "40px 20px", textAlign: "center", cursor: phase === "idle" ? "pointer" : "default", background: isDragging ? "rgba(16,185,129,0.04)" : "transparent", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
-        >
-          <input ref={fileInput} type="file" style={{ display: "none" }} accept=".pdf,.doc,.docx,.txt,.png,.jpg" onChange={e => handleFile(e.target.files[0])} />
-
-          {phase === "idle" && (
-            <div>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#1A1C23", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: 22 }}>☁️</div>
-              <p style={{ fontWeight: 600, marginBottom: 4 }}>Drag & drop policy document</p>
-              <p style={{ color: "#9CA3AF", fontSize: 13 }}>PDF, DOCX, TXT or Images</p>
-              <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 12 }}>
-                {["PDF","DOCX","TXT","IMAGE"].map(f => <span key={f} style={{ fontSize: 11, padding: "2px 8px", border: "1px solid #2A2D35", borderRadius: 4, color: "#6B7280" }}>{f}</span>)}
-              </div>
-            </div>
-          )}
-
-          {phase === "scanning" && (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-              <div style={{ position: "relative", width: 52, height: 64, border: "1px solid rgba(16,185,129,0.4)", borderRadius: 6, background: "rgba(16,185,129,0.05)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                <span style={{ fontSize: 24, position: "relative", zIndex: 1 }}>📄</span>
-                <div className="scan-line" />
-              </div>
-              <div>
-                <p style={{ color: "#10B981", fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{fileName}</p>
-                <p style={{ color: "#9CA3AF", fontSize: 13 }}>{SCAN_STEPS[scanStep]}</p>
-              </div>
-              {/* Progress bar */}
-              <div style={{ width: "80%", height: 4, background: "#2A2D35", borderRadius: 2, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${progress}%`, background: "linear-gradient(90deg, #10B981, #3B82F6)", borderRadius: 2, transition: "width 0.2s" }} />
-              </div>
-            </div>
-          )}
-
-          {phase === "done" && (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 20px", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 10 }}>
-                <span style={{ color: "#10B981" }}>✓</span>
-                <span style={{ color: "#10B981", fontWeight: 600, fontSize: 14 }}>{fileName}</span>
-              </div>
-              <p style={{ color: "#10B981", fontSize: 12 }}>✓ Document analysed — open chat to ask questions</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* PASTE TAB */}
-      {activeTab === "paste" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ position: "relative" }}>
-            <textarea
-              value={pasteText}
-              onChange={e => setPasteText(e.target.value)}
-              placeholder={"Paste your policy text here...\n\nCopy text from your insurance document, email, or any source and paste it here. The AI will analyse it immediately."}
-              style={{ width: "100%", height: 160, background: "#12141A", border: "1px solid #2A2D35", borderRadius: 10, padding: "14px 14px 30px", fontSize: 13, color: "#F3F4F6", resize: "none", lineHeight: 1.6, fontFamily: "Inter, sans-serif" }}
-            />
-            <span style={{ position: "absolute", bottom: 10, right: 12, fontSize: 11, color: "#4B5563" }}>{pasteText.length} chars</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <p style={{ fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center", gap: 5 }}>🔒 AI only uses what you paste</p>
-            <button onClick={handlePaste} style={{ padding: "9px 20px", background: "#10B981", color: "#0B0C10", fontWeight: 700, borderRadius: 8, fontSize: 13, border: "none" }}>
-              ⚡ Analyse
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-
-    {/* INSIGHTS */}
-    {phase === "done" && (
-      <div className="fade-up">
-        {/* HEADER */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #2A2D35", paddingBottom: 16, marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 20 }}>🛡</span>
-            <h2 style={{ fontSize: 18, fontWeight: 700 }}>{DEMO_RESULT.title}</h2>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 12px", background: "#1A1C23", borderRadius: 6, border: "1px solid #2A2D35" }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#10B981", animation: "pulse 2s infinite" }} />
-            <span style={{ fontSize: 11, color: "#9CA3AF" }}>Analysis Complete</span>
+        <!-- IDLE -->
+        <div id="stateIdle">
+          <div style="width:48px;height:48px;border-radius:50%;background:#1A1C23;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px">☁️</div>
+          <p style="font-weight:600;margin-bottom:4px;font-size:15px">Drag & drop policy document</p>
+          <p style="color:#9CA3AF;font-size:13px">PDF, DOCX, TXT or Images</p>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+            <span style="font-size:11px;padding:2px 8px;border:1px solid #2A2D35;border-radius:4px;color:#4B5563">PDF</span>
+            <span style="font-size:11px;padding:2px 8px;border:1px solid #2A2D35;border-radius:4px;color:#4B5563">DOCX</span>
+            <span style="font-size:11px;padding:2px 8px;border:1px solid #2A2D35;border-radius:4px;color:#4B5563">TXT</span>
+            <span style="font-size:11px;padding:2px 8px;border:1px solid #2A2D35;border-radius:4px;color:#4B5563">IMG</span>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
-          {/* EXCLUSIONS */}
-          <div className="glass insight-in" style={{ borderRadius: 14, padding: 20, gridColumn: "span 2" }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>⚠️ Critical Exclusions</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {DEMO_RESULT.exclusions.map((ex, i) => (
-                <div key={i} className="insight-in" style={{ background: "#12141A", borderRadius: 10, padding: "14px 16px", borderLeft: `3px solid ${riskColor[ex.risk]}`, animationDelay: `${i * 0.1}s` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                    <span style={{ fontWeight: 600, fontSize: 13 }}>{ex.title}</span>
-                    <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 600, background: `${riskColor[ex.risk]}18`, color: riskColor[ex.risk] }}>{ex.risk} risk</span>
-                  </div>
-                  <p style={{ fontSize: 13, color: "#9CA3AF", lineHeight: 1.6 }}>{ex.detail}</p>
-                </div>
-              ))}
-            </div>
+        <!-- SCANNING -->
+        <div id="stateScan" style="display:none;flex-direction:column;align-items:center;gap:14px;width:100%">
+          <div style="position:relative;width:50px;height:62px;border:1px solid rgba(16,185,129,.4);border-radius:6px;background:rgba(16,185,129,.05);display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <span style="font-size:22px;position:relative;z-index:1">📄</span>
+            <div class="scan-bar"></div>
           </div>
-
-          {/* COVERAGE */}
-          <div className="glass insight-in" style={{ borderRadius: 14, padding: 20 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 14 }}>✓ Coverage Summary</h3>
-            {DEMO_RESULT.coverage.map((c, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: i < DEMO_RESULT.coverage.length - 1 ? "1px solid #1A1C23" : "none", fontSize: 13 }}>
-                <span style={{ color: "#9CA3AF" }}>{c.item}</span>
-                <span style={{ fontWeight: 700, fontSize: 12, color: statusColor[c.status] }}>{statusIcon[c.status]} {c.status}</span>
-              </div>
-            ))}
+          <div style="text-align:center">
+            <p id="scanFile" style="color:#10B981;font-weight:600;font-size:14px;margin-bottom:4px"></p>
+            <p id="scanMsg" style="color:#9CA3AF;font-size:13px">Reading policy structure...</p>
           </div>
-
-          {/* KEY FACTS */}
-          <div className="glass insight-in" style={{ borderRadius: 14, padding: 20 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 14 }}>◆ Key Policy Facts</h3>
-            {DEMO_RESULT.keyFacts.map((f, i) => (
-              <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "7px 0", borderBottom: i < DEMO_RESULT.keyFacts.length - 1 ? "1px solid #1A1C23" : "none", fontSize: 13 }}>
-                <span style={{ color: "#10B981", flexShrink: 0, marginTop: 2, fontSize: 10 }}>◆</span>
-                <span style={{ color: "#9CA3AF", lineHeight: 1.5 }}>{f}</span>
-              </div>
-            ))}
+          <div style="width:70%;height:3px;background:#2A2D35;border-radius:2px;overflow:hidden">
+            <div id="scanProg" style="height:100%;width:0%;background:linear-gradient(90deg,#10B981,#3B82F6);transition:width .2s;border-radius:2px"></div>
           </div>
-
-          {/* ACTIONS */}
-          <div className="glass insight-in" style={{ borderRadius: 14, padding: 20 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 14 }}>💡 Recommended Actions</h3>
-            {DEMO_RESULT.actions.map((a, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "10px 10px", borderRadius: 8, marginBottom: 4, cursor: "pointer", border: "1px solid transparent", transition: "all 0.15s" }}
-                onMouseOver={e => e.currentTarget.style.background = "#1A1C23"}
-                onMouseOut={e => e.currentTarget.style.background = "transparent"}
-              >
-                <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(139,92,246,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13 }}>💡</div>
-                <div>
-                  <p style={{ fontWeight: 600, fontSize: 13, marginBottom: 3 }}>{a.title}</p>
-                  <p style={{ fontSize: 12, color: "#9CA3AF", lineHeight: 1.5 }}>{a.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p id="scanPct" style="font-size:12px;color:#4B5563">0% complete</p>
         </div>
-      </div>
-    )}
-  </main>
 
-  {/* CHAT TOGGLE */}
-  <button
-    onClick={() => setChatOpen(o => !o)}
-    style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 56, height: 56, borderRadius: "50%", background: "#10B981", border: "none", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 22px rgba(16,185,129,0.5)", transition: "transform 0.2s" }}
-    onMouseOver={e => e.currentTarget.style.transform = "scale(1.08)"}
-    onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
-  >
-    {chatOpen ? "✕" : "💬"}
-  </button>
-
-  {/* CHAT WINDOW */}
-  {chatOpen && (
-    <div className="glass modal-in" style={{ position: "fixed", bottom: 90, right: 24, zIndex: 50, width: 380, height: 520, borderRadius: 20, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      {/* CHAT HEADER */}
-      <div style={{ padding: "14px 16px", borderBottom: "1px solid #2A2D35", background: "rgba(18,20,26,0.6)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ position: "relative", width: 36, height: 36, borderRadius: "50%", background: "rgba(16,185,129,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
-            🤖
-            <span style={{ position: "absolute", bottom: 0, right: 0, width: 10, height: 10, background: "#10B981", borderRadius: "50%", border: "2px solid #12141A", animation: "pulse 2s infinite" }} />
+        <!-- DONE -->
+        <div id="stateDone" style="display:none;flex-direction:column;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 20px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:10px">
+            <span style="color:#10B981;font-weight:700">✓</span>
+            <span id="doneFile" style="color:#10B981;font-weight:600;font-size:14px"></span>
           </div>
-          <div>
-            <p style={{ fontWeight: 700, fontSize: 13 }}>Policy Assistant</p>
-            <p style={{ fontSize: 10, color: "#9CA3AF" }}>Only answers from your document</p>
-          </div>
-        </div>
-        <button onClick={() => setChatOpen(false)} style={{ background: "none", border: "none", color: "#6B7280", fontSize: 18, padding: 4 }}>✕</button>
-      </div>
-
-      {/* QUICK QUESTIONS */}
-      <div style={{ padding: "10px 12px 6px", display: "flex", flexWrap: "wrap", gap: 6, flexShrink: 0 }}>
-        {[["📋 What's covered?","What does this policy cover?"],["⚠️ Exclusions","What are the main exclusions?"],["💰 Limits","What are the coverage limits?"],["📞 Claims","How do I make a claim?"],["📝 Summary","Give me a plain English summary"]].map(([label, q]) => (
-          <button key={label} onClick={() => sendMessage(q)} style={{ fontSize: 11, padding: "4px 10px", background: "#1A1C23", border: "1px solid #2A2D35", borderRadius: 20, color: "#9CA3AF", transition: "all 0.15s", fontFamily: "Inter, sans-serif" }}
-            onMouseOver={e => { e.currentTarget.style.borderColor = "#10B981"; e.currentTarget.style.color = "#10B981"; }}
-            onMouseOut={e => { e.currentTarget.style.borderColor = "#2A2D35"; e.currentTarget.style.color = "#9CA3AF"; }}
-          >{label}</button>
-        ))}
-      </div>
-
-      {/* MESSAGES */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "10px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {messages.map((m, i) => (
-          <div key={i} className="msg-in" style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-            <div style={{ maxWidth: "88%", padding: "10px 14px", borderRadius: m.role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px", background: m.role === "user" ? "rgba(16,185,129,0.12)" : "#1A1C23", border: m.role === "user" ? "1px solid rgba(16,185,129,0.25)" : "1px solid #2A2D35", fontSize: 13, lineHeight: 1.65, color: m.role === "user" ? "#d0fff0" : "#F3F4F6" }}>
-              {formatMsg(m.text)}
-            </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="msg-in" style={{ display: "flex" }}>
-            <div style={{ padding: "12px 16px", background: "#1A1C23", border: "1px solid #2A2D35", borderRadius: "14px 14px 14px 4px" }}>
-              <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6B7280" }} className={`dot${i+1}`} />)}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* USAGE WARNING */}
-        {!isPremium && left === 1 && questionsUsed > 0 && (
-          <div style={{ padding: "8px 12px", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 8, fontSize: 12, color: "#F59E0B" }}>
-            ⚠️ 1 free insight remaining — <button onClick={() => setShowPaywall(true)} style={{ background: "none", border: "none", color: "#F59E0B", textDecoration: "underline", fontSize: 12, cursor: "pointer", fontFamily: "Inter, sans-serif", fontWeight: 600 }}>upgrade for unlimited</button>
-          </div>
-        )}
-        <div ref={chatBottom} />
-      </div>
-
-      {/* INPUT */}
-      <div style={{ padding: "10px 12px", background: "rgba(18,20,26,0.8)", borderTop: "1px solid #2A2D35", flexShrink: 0 }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
-          <textarea
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
-            placeholder={!isPremium && questionsUsed >= FREE_LIMIT ? "🔒 Upgrade to ask more questions" : "Ask about your policy..."}
-            disabled={!isPremium && questionsUsed >= FREE_LIMIT}
-            style={{ flex: 1, background: "#0B0C10", border: "1px solid #2A2D35", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: "#F3F4F6", resize: "none", minHeight: 40, maxHeight: 100, fontFamily: "Inter, sans-serif", opacity: !isPremium && questionsUsed >= FREE_LIMIT ? 0.5 : 1 }}
-            rows={1}
-          />
-          <button onClick={() => sendMessage()} style={{ width: 36, height: 36, background: "#10B981", border: "none", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>→</button>
+          <p style="color:#10B981;font-size:12px">Document analysed — open chat ↘</p>
+          <button onclick="resetUpload(event)" style="font-size:11px;color:#4B5563;background:none;border:none;text-decoration:underline;margin-top:2px;cursor:pointer;font-family:inherit">Upload different file</button>
         </div>
       </div>
     </div>
-  )}
 
-  {/* PAYWALL MODAL */}
-  {showPaywall && (
-    <div onClick={e => e.target === e.currentTarget && setShowPaywall(false)} style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(5,6,10,0.88)", backdropFilter: "blur(14px)" }}>
-      <div className="glass modal-in" style={{ width: "90%", maxWidth: 440, borderRadius: 20, padding: 32, border: "1px solid rgba(245,200,66,0.25)", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -40, left: "50%", transform: "translateX(-50%)", width: 280, height: 120, background: "radial-gradient(ellipse, rgba(245,200,66,0.1), transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <div style={{ fontSize: 44, marginBottom: 14 }}>🔒</div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>You've used your <span style={{ color: "#F5C842" }}>3 free</span> insights</h2>
-          <p style={{ fontSize: 13, color: "#9CA3AF", lineHeight: 1.7 }}>Upgrade to continue getting instant AI-powered answers — unlimited questions, any document, any time.</p>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
-          <div className="plan-card" onClick={() => setSelectedPlan("monthly")} style={{ outline: selectedPlan === "monthly" ? "2px solid #F5C842" : "none" }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Monthly</div>
-            <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 10 }}>$9.99<span style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 400 }}>/mo</span></div>
-            {["Unlimited questions", "Any document type", "Cancel anytime"].map(f => <div key={f} style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 4, display: "flex", gap: 6 }}><span style={{ color: "#10B981" }}>✓</span>{f}</div>)}
-          </div>
-          <div className="plan-card plan-annual" onClick={() => setSelectedPlan("annual")} style={{ outline: selectedPlan === "annual" ? "2px solid #F5C842" : "none", position: "relative" }}>
-            <div style={{ position: "absolute", top: -10, right: 10, background: "#F5C842", color: "#0B0C10", fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 10 }}>BEST VALUE</div>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Annual</div>
-            <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 10 }}>$79<span style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 400 }}>/yr</span></div>
-            {["Unlimited questions", "Priority responses", "Save 34% vs monthly"].map((f, i) => <div key={f} style={{ fontSize: 12, color: i === 2 ? "#F5C842" : "#9CA3AF", marginBottom: 4, display: "flex", gap: 6 }}><span style={{ color: "#10B981" }}>✓</span>{f}</div>)}
-          </div>
-        </div>
-
-        <button onClick={() => { setIsPremium(true); setShowPaywall(false); setMessages(prev => [...prev, { role: "bot", text: "🎉 Premium unlocked! Ask unlimited questions from your policy document." }]); setChatOpen(true); }}
-          style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg, #10B981, #3B82F6)", color: "#0B0C10", fontWeight: 800, borderRadius: 12, fontSize: 15, border: "none", marginBottom: 10, boxShadow: "0 0 20px rgba(16,185,129,0.3)" }}>
-          ⭐ Unlock Unlimited Access
-        </button>
-        <p style={{ textAlign: "center", fontSize: 12, color: "#6B7280", marginBottom: 8 }}>Secure payment · Cancel anytime</p>
-        <button onClick={() => setShowPaywall(false)} style={{ width: "100%", background: "none", border: "none", fontSize: 12, color: "#4B5563", padding: 4, fontFamily: "Inter, sans-serif" }}>Maybe later</button>
+    <!-- PASTE TAB -->
+    <div id="panelPaste" style="display:none">
+      <div style="position:relative">
+        <textarea id="pasteIn" placeholder="Paste your policy text here...&#10;&#10;Copy from any insurance document, email, or source." oninput="document.getElementById('charCt').textContent=this.value.length+' chars'" style="width:100%;height:150px;background:#12141A;border:1px solid #2A2D35;border-radius:10px;padding:12px 12px 28px;font-size:13px;color:#F3F4F6;resize:none;line-height:1.6;font-family:inherit"></textarea>
+        <span id="charCt" style="position:absolute;bottom:8px;right:12px;font-size:11px;color:#4B5563">0 chars</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <p style="font-size:12px;color:#4B5563">🔒 AI only uses what you paste</p>
+        <button onclick="handlePaste()" style="padding:8px 20px;background:#10B981;color:#0B0C10;font-weight:700;border-radius:8px;font-size:13px;border:none;cursor:pointer;font-family:inherit">⚡ Analyse</button>
       </div>
     </div>
-  )}
+  </div>
+
+  <!-- INSIGHTS (hidden until done) -->
+  <div id="insights" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2A2D35;padding-bottom:14px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">🛡</span>
+        <h2 style="font-size:17px;font-weight:700">Commercial Property & Liability Policy — 2025</h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:#1A1C23;border-radius:6px;border:1px solid #2A2D35">
+        <div style="width:7px;height:7px;border-radius:50%;background:#10B981;animation:pulse 2s infinite"></div>
+        <span style="font-size:11px;color:#9CA3AF">Analysis Complete</span>
+      </div>
+    </div>
+
+    <!-- EXCLUSIONS -->
+    <div class="glass insight" style="border-radius:14px;padding:20px;margin-bottom:14px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">⚠️ Critical Exclusions</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px">
+        <div class="insight" style="background:#12141A;border-radius:10px;padding:14px 16px;border-left:3px solid #F59E0B;animation-delay:.0s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-weight:600;font-size:13px">Cyber Liability Exclusion</span><span style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;background:rgba(245,158,11,.12);color:#F59E0B;white-space:nowrap;margin-left:8px">high</span></div>
+          <p style="font-size:12px;color:#9CA3AF;line-height:1.6">Policy explicitly excludes any damages arising from data breaches, ransomware attacks, or unauthorised access to electronic systems. Section IV, Clause 2(b).</p>
+        </div>
+        <div class="insight" style="background:#12141A;border-radius:10px;padding:14px 16px;border-left:3px solid #F59E0B;animation-delay:.1s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-weight:600;font-size:13px">Flood & Water Damage</span><span style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;background:rgba(245,158,11,.12);color:#F59E0B;white-space:nowrap;margin-left:8px">high</span></div>
+          <p style="font-size:12px;color:#9CA3AF;line-height:1.6">Surface water, ground water, and flood damage from external sources are excluded unless a separate Flood Endorsement is attached. Section III, Clause 7.</p>
+        </div>
+        <div class="insight" style="background:#12141A;border-radius:10px;padding:14px 16px;border-left:3px solid #3B82F6;animation-delay:.2s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-weight:600;font-size:13px">Intentional Acts</span><span style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;background:rgba(59,130,246,.12);color:#3B82F6;white-space:nowrap;margin-left:8px">medium</span></div>
+          <p style="font-size:12px;color:#9CA3AF;line-height:1.6">No coverage for bodily injury or property damage expected or intended from the standpoint of the insured. Section II, Exclusion A.</p>
+        </div>
+        <div class="insight" style="background:#12141A;border-radius:10px;padding:14px 16px;border-left:3px solid #3B82F6;animation-delay:.3s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-weight:600;font-size:13px">Pollution Liability Limitation</span><span style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;background:rgba(59,130,246,.12);color:#3B82F6;white-space:nowrap;margin-left:8px">medium</span></div>
+          <p style="font-size:12px;color:#9CA3AF;line-height:1.6">Coverage limited to sudden and accidental incidents discovered within 72 hours. Gradual pollution events are fully excluded.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+      <!-- COVERAGE -->
+      <div class="glass insight" style="border-radius:14px;padding:20px;animation-delay:.1s">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">✓ Coverage Summary</h3>
+        <div id="covList"></div>
+      </div>
+      <!-- KEY FACTS -->
+      <div class="glass insight" style="border-radius:14px;padding:20px;animation-delay:.2s">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">◆ Key Facts</h3>
+        <div id="factList"></div>
+      </div>
+      <!-- ACTIONS -->
+      <div class="glass insight" style="border-radius:14px;padding:20px;animation-delay:.3s">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">💡 Recommended Actions</h3>
+        <div id="actList"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CHAT BUTTON -->
+<button id="chatBtn" onclick="toggleChat()" style="position:fixed;bottom:22px;right:22px;z-index:60;width:54px;height:54px;border-radius:50%;background:#10B981;border:none;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(16,185,129,.5);transition:transform .2s;cursor:pointer" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">💬</button>
+
+<!-- CHAT WINDOW -->
+<div id="chatWin" class="glass closed" style="position:fixed;bottom:86px;right:22px;z-index:60;width:360px;height:510px;border-radius:20px;display:flex;flex-direction:column;overflow:hidden">
+  <div style="padding:13px 16px;border-bottom:1px solid #2A2D35;background:rgba(18,20,26,.6);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative;width:34px;height:34px;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;font-size:15px">
+        🤖<span style="position:absolute;bottom:0;right:0;width:9px;height:9px;background:#10B981;border-radius:50%;border:2px solid #12141A;animation:pulse 2s infinite"></span>
+      </div>
+      <div><p style="font-weight:700;font-size:13px">Policy Assistant</p><p style="font-size:10px;color:#9CA3AF">Only answers from your document</p></div>
+    </div>
+    <button onclick="toggleChat()" style="background:none;border:none;color:#4B5563;font-size:17px;cursor:pointer">✕</button>
+  </div>
+
+  <!-- QUICK CHIPS -->
+  <div style="padding:9px 12px 5px;display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0">
+    <button onclick="sendQ('What does this policy cover?')" class="chip">📋 Covered?</button>
+    <button onclick="sendQ('What are the main exclusions?')" class="chip">⚠️ Exclusions</button>
+    <button onclick="sendQ('What are the coverage limits?')" class="chip">💰 Limits</button>
+    <button onclick="sendQ('How do I make a claim?')" class="chip">📞 Claims</button>
+    <button onclick="sendQ('Give me a plain English summary')" class="chip">📝 Summary</button>
+  </div>
+  <style>.chip{font-size:11px;padding:4px 10px;background:#1A1C23;border:1px solid #2A2D35;border-radius:20px;color:#9CA3AF;cursor:pointer;font-family:inherit;transition:all .15s}.chip:hover{border-color:#10B981;color:#10B981}</style>
+
+  <!-- MESSAGES -->
+  <div id="chatMsgs" style="flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+    <div style="max-width:88%;padding:10px 13px;border-radius:14px 14px 14px 4px;background:#1A1C23;border:1px solid #2A2D35;font-size:13px;line-height:1.65">
+      👋 Upload a policy document to get started. I'll only answer from what's written in it.
+    </div>
+  </div>
+
+  <!-- USAGE WARNING -->
+  <div id="useWarn" style="display:none;padding:8px 12px;background:rgba(245,158,11,.08);border-top:1px solid rgba(245,158,11,.2);font-size:12px;color:#F59E0B;flex-shrink:0">
+    ⚠️ <span id="warnTxt">1 free insight remaining</span> — <button onclick="showWall()" style="background:none;border:none;color:#F59E0B;text-decoration:underline;font-size:12px;cursor:pointer;font-weight:700;font-family:inherit">upgrade</button>
+  </div>
+
+  <!-- INPUT -->
+  <div style="padding:10px 12px;background:rgba(18,20,26,.8);border-top:1px solid #2A2D35;flex-shrink:0">
+    <div style="display:flex;gap:7px;align-items:flex-end">
+      <textarea id="chatIn" placeholder="Ask about your policy..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'" style="flex:1;background:#0B0C10;border:1px solid #2A2D35;border-radius:10px;padding:9px 12px;font-size:13px;color:#F3F4F6;resize:none;min-height:38px;max-height:90px;font-family:inherit"></textarea>
+      <button onclick="sendMsg()" style="width:36px;height:36px;background:#10B981;border:none;border-radius:9px;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer">→</button>
+    </div>
+  </div>
 </div>
-```
 
-);
+<!-- PAYWALL -->
+<div id="wallOverlay" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(5,6,10,.9);backdrop-filter:blur(16px)" onclick="if(event.target===this)closeWall()">
+  <div class="glass pop-in" style="width:90%;max-width:420px;border-radius:20px;padding:30px;border:1px solid rgba(245,200,66,.25);position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50px;left:50%;transform:translateX(-50%);width:260px;height:120px;background:radial-gradient(ellipse,rgba(245,200,66,.1),transparent 70%);pointer-events:none"></div>
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="font-size:42px;margin-bottom:12px">🔒</div>
+      <h2 style="font-size:21px;font-weight:800;margin-bottom:8px">You've used your <span style="color:#F5C842">3 free</span> insights</h2>
+      <p style="font-size:13px;color:#9CA3AF;line-height:1.65">Upgrade for unlimited AI-powered answers — any document, any time.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div onclick="document.querySelectorAll('.pcard').forEach(c=>c.style.outline='none');this.style.outline='2px solid #F5C842'" class="pcard" style="border:1px solid #2A2D35;border-radius:12px;padding:14px;cursor:pointer;transition:all .2s">
+        <div style="font-weight:700;font-size:13px;margin-bottom:3px">Monthly</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:8px">$9.99<span style="font-size:11px;color:#9CA3AF;font-weight:400">/mo</span></div>
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:3px;display:flex;gap:5px"><span style="color:#10B981">✓</span>Unlimited questions</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:3px;display:flex;gap:5px"><span style="color:#10B981">✓</span>Any document type</div>
+        <div style="font-size:11px;color:#9CA3AF;display:flex;gap:5px"><span style="color:#10B981">✓</span>Cancel anytime</div>
+      </div>
+      <div onclick="document.querySelectorAll('.pcard').forEach(c=>c.style.outline='none');this.style.outline='2px solid #F5C842'" class="pcard" style="border:1px solid rgba(245,200,66,.4);border-radius:12px;padding:14px;cursor:pointer;background:rgba(245,200,66,.04);position:relative;outline:2px solid #F5C842">
+        <div style="position:absolute;top:-9px;right:10px;background:#F5C842;color:#0B0C10;font-size:9px;font-weight:800;padding:2px 7px;border-radius:9px">BEST VALUE</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:3px">Annual</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:8px">$79<span style="font-size:11px;color:#9CA3AF;font-weight:400">/yr</span></div>
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:3px;display:flex;gap:5px"><span style="color:#10B981">✓</span>Unlimited questions</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:3px;display:flex;gap:5px"><span style="color:#10B981">✓</span>Priority responses</div>
+        <div style="font-size:11px;color:#F5C842;display:flex;gap:5px"><span style="color:#10B981">✓</span>Save 34% vs monthly</div>
+      </div>
+    </div>
+    <button onclick="doUpgrade()" style="width:100%;padding:13px;background:linear-gradient(135deg,#10B981,#3B82F6);color:#0B0C10;font-weight:800;border-radius:12px;font-size:15px;border:none;margin-bottom:8px;box-shadow:0 0 18px rgba(16,185,129,.3);cursor:pointer;font-family:inherit">⭐ Unlock Unlimited Access</button>
+    <p style="text-align:center;font-size:11px;color:#4B5563;margin-bottom:6px">Secure payment · Cancel anytime</p>
+    <button onclick="closeWall()" style="width:100%;background:none;border:none;font-size:12px;color:#4B5563;padding:4px;cursor:pointer;font-family:inherit">Maybe later</button>
+  </div>
+</div>
+
+<script>
+// ── STATE
+let phase = 'idle', used = 0, premium = false;
+const FREE = 3;
+
+// ── DEMO DATA
+const COV = [
+  {item:'General Liability',s:'covered'},{item:'Property Damage',s:'covered'},
+  {item:'Business Interruption',s:'covered'},{item:'Employer Liability',s:'covered'},
+  {item:'Product Liability',s:'partial'},{item:'Cyber & Data Breach',s:'gap'},{item:'Flood Damage',s:'gap'}
+];
+const FACTS = [
+  'Policy period: 1 January 2025 – 31 December 2025',
+  'Per occurrence limit: $2,500,000','Annual aggregate limit: $5,000,000',
+  'Standard deductible: $2,500 per claim','Claims must be reported within 14 days',
+  '30-day notice required for material operational changes'
+];
+const ACTS = [
+  {t:'Add Cyber Liability Rider',d:'Significant digital exposure identified but cyber incidents are fully excluded. A standalone cyber policy is strongly recommended.'},
+  {t:'Purchase Flood Endorsement',d:'Current policy provides zero flood protection. A separate endorsement is needed.'},
+  {t:'Review Aggregate Limits',d:'Current $5M annual aggregate may be insufficient if multiple claims occur in the same policy year.'}
+];
+const STEPS = ['Reading policy structure...','Extracting clauses and sections...','Identifying coverage terms...','Flagging exclusions...','Running risk analysis...','Generating insights...'];
+const SC = {covered:'#10B981',gap:'#F59E0B',partial:'#3B82F6'};
+const SI = {covered:'✓',gap:'✗',partial:'~'};
+
+// ── CHAT RESPONSES
+const R = {
+  cover:'Based on your policy, the following are confirmed:\n\n✓ General Liability — up to $2.5M per occurrence.\n✓ Business Interruption — loss of income if operations suspended, 72-hour waiting period.\n✓ Property Damage — covers building, contents and equipment.\n✓ Employer Liability — covers work-related injury claims.\n\n⚠️ Cyber incidents and flood damage are NOT covered.',
+  excl:'Your policy contains several significant exclusions:\n\n⚠️ Cyber Liability — Section IV, Clause 2(b) excludes all data breaches, ransomware, and unauthorised system access.\n⚠️ Flood & Surface Water — excluded unless a separate Flood Endorsement is purchased.\n⚠️ Intentional Acts — no coverage for damage intentionally caused by the insured.\n⚠️ Gradual Pollution — only sudden accidental pollution within 72 hours is covered.',
+  lim:'Your policy coverage limits:\n\n💰 Per Occurrence — $2,500,000 maximum per single incident.\n💰 Annual Aggregate — $5,000,000 total across all claims.\n💰 Deductible — $2,500 applies to each claim before insurer pays.\n💰 Business Interruption — up to 12 months lost revenue.',
+  claim:'The claims process requires:\n\n1. Report within 14 days — late notification may result in declined claim.\n2. Written notification — submit written notice with date, location and description.\n3. Preserve evidence — do not dispose of damaged property until insurer inspects.\n4. Cooperate fully — assist with any investigation.',
+  sum:'Plain English summary:\n\n📋 What it is — commercial policy covering premises, liability and loss of income.\n✓ Protected — third-party injury, accidental property damage, fire.\n⚠️ Gaps — hacking, data breaches and flooding are NOT covered.\n💰 Numbers — you pay first $2,500 per claim, max $5M per year.\n📅 Expires — 31 December 2025.'
+};
+
+function getReply(q) {
+  const l = q.toLowerCase();
+  if(l.includes('cover')||l.includes('what')) return R.cover;
+  if(l.includes('exclu')||l.includes('not cover')) return R.excl;
+  if(l.includes('limit')||l.includes('amount')||l.includes('how much')) return R.lim;
+  if(l.includes('claim')||l.includes('report')||l.includes('how do')) return R.claim;
+  if(l.includes('summar')||l.includes('plain')||l.includes('overview')) return R.sum;
+  if(l.includes('cyber')||l.includes('hack')||l.includes('data')) return '⚠️ Cyber liability is explicitly excluded under Section IV, Clause 2(b). Data breaches, ransomware and unauthorised system access are all excluded. A separate cyber insurance policy is required.';
+  if(l.includes('flood')||l.includes('water')) return '⚠️ Flood damage is excluded unless a separate Flood Endorsement is attached. Surface water and groundwater damage are not covered (Section III, Clause 7).';
+  if(l.includes('deduct')||l.includes('excess')) return '✓ Your policy has a standard excess of $2,500 per claim. You pay the first $2,500 of any loss before the insurer\'s coverage applies.';
+  if(l.includes('employ')||l.includes('theft')||l.includes('staff')) return '⚠️ Employee theft is not covered under this policy. You would need a separate Commercial Crime policy or Employee Dishonesty Endorsement.';
+  if(l.includes('expir')||l.includes('renew')||l.includes('date')) return '✓ Your policy runs from 1 January 2025 to 31 December 2025. Renewal should be initiated at least 30 days before expiry.';
+  return 'Based on this Commercial Property & Liability policy, the specific detail about "'+q+'" is not explicitly stated in the sections reviewed. I\'d recommend checking Section V of the full policy or consulting your broker.';
 }
+
+// ── FILE HANDLING
+function handleFile(f) { if(!f) return; startScan(f.name); }
+function handlePaste() {
+  const t = document.getElementById('pasteIn').value.trim();
+  if(t.length < 30) return;
+  startScan('Pasted text');
+}
+
+function startScan(name) {
+  phase = 'scanning';
+  show('stateScan'); hide('stateIdle'); hide('stateDone');
+  document.getElementById('scanFile').textContent = name;
+  document.getElementById('doneFile').textContent = name;
+  document.getElementById('pipBox').style.display = 'flex';
+  let s = 0, p = 0;
+  const si = setInterval(()=>{ if(++s < STEPS.length) document.getElementById('scanMsg').textContent = STEPS[s]; }, 650);
+  const pi = setInterval(()=>{ p = Math.min(p + Math.random()*7, 88); document.getElementById('scanProg').style.width = p+'%'; document.getElementById('scanPct').textContent = Math.round(p)+'% complete'; if(p>=88) clearInterval(pi); }, 180);
+  setTimeout(()=>{
+    clearInterval(si); document.getElementById('scanProg').style.width='100%';
+    setTimeout(()=>{
+      phase = 'done';
+      hide('stateScan'); show('stateDone');
+      renderInsights();
+      document.getElementById('insights').style.display = 'block';
+      openChat();
+      addMsg('bot', 'I\'ve analysed your Commercial Property & Liability Policy. Several areas need attention — particularly cyber liability and flood coverage. What would you like to explore?');
+    }, 400);
+  }, 4200);
+}
+
+function resetUpload(e) { e.stopPropagation(); phase='idle'; show('stateIdle'); hide('stateDone'); hide('stateScan'); document.getElementById('insights').style.display='none'; }
+
+// ── RENDER INSIGHTS
+function renderInsights() {
+  const sc = {covered:'#10B981',gap:'#F59E0B',partial:'#3B82F6'};
+  const si = {covered:'✓',gap:'✗',partial:'~'};
+  document.getElementById('covList').innerHTML = COV.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1A1C23;font-size:13px"><span style="color:#9CA3AF">${c.item}</span><span style="font-weight:700;font-size:11px;color:${sc[c.s]}">${si[c.s]} ${c.s}</span></div>`).join('');
+  document.getElementById('factList').innerHTML = FACTS.map(f=>`<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #1A1C23;font-size:12px"><span style="color:#10B981;flex-shrink:0;margin-top:2px;font-size:9px">◆</span><span style="color:#9CA3AF;line-height:1.55">${f}</span></div>`).join('');
+  document.getElementById('actList').innerHTML = ACTS.map(a=>`<div style="display:flex;gap:10px;padding:10px 8px;border-radius:8px;margin-bottom:4px;cursor:pointer" onmouseover="this.style.background='#1A1C23'" onmouseout="this.style.background='transparent'"><div style="width:26px;height:26px;border-radius:6px;background:rgba(139,92,246,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px">💡</div><div><p style="font-weight:600;font-size:13px;margin-bottom:2px">${a.t}</p><p style="font-size:11px;color:#9CA3AF;line-height:1.5">${a.d}</p></div></div>`).join('');
+}
+
+// ── CHAT
+function toggleChat() {
+  const w = document.getElementById('chatWin');
+  if(w.classList.contains('open')) { w.classList.replace('open','closed'); document.getElementById('chatBtn').textContent='💬'; }
+  else openChat();
+}
+function openChat() {
+  const w = document.getElementById('chatWin');
+  w.classList.replace('closed','open');
+  document.getElementById('chatBtn').textContent='✕';
+}
+
+function sendQ(q) { document.getElementById('chatIn').value = q; sendMsg(); }
+
+function sendMsg() {
+  if(!premium && used >= FREE) { showWall(); return; }
+  if(phase === 'idle') { addMsg('bot','Please upload a policy document first.'); return; }
+  const inp = document.getElementById('chatIn');
+  const q = inp.value.trim(); if(!q) return;
+  inp.value = ''; inp.style.height = 'auto';
+  addMsg('user', q);
+  used++;
+  updatePips();
+  const tid = addTyping();
+  setTimeout(()=>{
+    removeTyping(tid);
+    addMsg('bot', getReply(q));
+    if(!premium && used >= FREE) setTimeout(()=>showWall(), 900);
+  }, 700 + Math.random()*900);
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.style.cssText = `display:flex;justify-content:${role==='user'?'flex-end':'flex-start'}`;
+  const b = document.createElement('div');
+  b.style.cssText = `max-width:88%;padding:10px 13px;border-radius:${role==='user'?'14px 14px 4px 14px':'14px 14px 14px 4px'};background:${role==='user'?'rgba(16,185,129,.12)':'#1A1C23'};border:1px solid ${role==='user'?'rgba(16,185,129,.25)':'#2A2D35'};font-size:13px;line-height:1.65;color:${role==='user'?'#d0fff0':'#F3F4F6'}`;
+  b.innerHTML = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  d.appendChild(b); box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addTyping() {
+  const id = 'ty'+Date.now(), box = document.getElementById('chatMsgs');
+  const d = document.createElement('div'); d.id = id;
+  d.innerHTML = '<div style="padding:11px 14px;background:#1A1C23;border:1px solid #2A2D35;border-radius:14px 14px 14px 4px;display:flex;gap:4px;align-items:center"><div style="width:6px;height:6px;border-radius:50%;background:#9CA3AF" class="d1"></div><div style="width:6px;height:6px;border-radius:50%;background:#9CA3AF" class="d2"></div><div style="width:6px;height:6px;border-radius:50%;background:#9CA3AF" class="d3"></div></div>';
+  box.appendChild(d); box.scrollTop = box.scrollHeight; return id;
+}
+function removeTyping(id) { const e = document.getElementById(id); if(e) e.remove(); }
+
+// ── USAGE
+function updatePips() {
+  const left = Math.max(0, FREE - used);
+  ['p1','p2','p3'].forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if(premium) { el.style.background='#10B981'; el.style.boxShadow='0 0 7px #10B981'; return; }
+    if(i < used) { el.style.background = used>=FREE ? '#F59E0B' : '#10B981'; el.style.boxShadow=`0 0 7px ${used>=FREE?'#F59E0B':'#10B981'}`; }
+    else { el.style.background='#2A2D35'; el.style.boxShadow='none'; }
+  });
+  const lbl = document.getElementById('pipLabel');
+  if(premium) { lbl.textContent='Unlimited ∞'; lbl.style.color='#10B981'; return; }
+  lbl.textContent = left>0 ? left+' free left' : 'Limit reached';
+  lbl.style.color = left===0 ? '#F59E0B' : '#9CA3AF';
+  const warn = document.getElementById('useWarn');
+  if(!premium && left===1) { warn.style.display='block'; document.getElementById('warnTxt').textContent='1 free insight remaining'; }
+  else if(!premium && left===0) { warn.style.display='block'; document.getElementById('warnTxt').textContent='Free limit reached'; document.getElementById('chatIn').disabled=true; document.getElementById('chatIn').placeholder='🔒 Upgrade to ask more'; }
+  else warn.style.display='none';
+}
+
+// ── PAYWALL
+function showWall() { const o=document.getElementById('wallOverlay'); o.style.display='flex'; }
+function closeWall() { document.getElementById('wallOverlay').style.display='none'; }
+function doUpgrade() {
+  // 👉 Replace with: window.location.href='https://buy.stripe.com/your-link';
+  premium=true; closeWall(); updatePips();
+  document.getElementById('chatIn').disabled=false;
+  document.getElementById('chatIn').placeholder='Ask about your policy...';
+  addMsg('bot','🎉 Premium unlocked! Ask unlimited questions.');
+  openChat();
+}
+
+// ── TABS
+function switchTab(t) {
+  const isUp = t==='up';
+  document.getElementById('panelUp').style.display = isUp?'block':'none';
+  document.getElementById('panelPaste').style.display = isUp?'none':'block';
+  document.getElementById('tabUp').style.background = isUp?'#1A1C23':'transparent';
+  document.getElementById('tabUp').style.color = isUp?'#F3F4F6':'#9CA3AF';
+  document.getElementById('tabUp').style.border = isUp?'1px solid #2A2D35':'1px solid transparent';
+  document.getElementById('tabPaste').style.background = isUp?'transparent':'#1A1C23';
+  document.getElementById('tabPaste').style.color = isUp?'#9CA3AF':'#F3F4F6';
+  document.getElementById('tabPaste').style.border = isUp?'1px solid transparent':'1px solid #2A2D35';
+  if(!isUp) document.getElementById('pasteIn').focus();
+}
+
+// ── HELPERS
+function show(id) { document.getElementById(id).style.display='flex'; }
+function hide(id) { document.getElementById(id).style.display='none'; }
+</script>
+</body>
+</html>
