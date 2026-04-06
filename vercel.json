@@ -1,23 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/dashboard", "dest": "/public/dashboard.html" },
+    { "src": "/my-policies", "dest": "/public/my-policies.html" },
+    { "src": "/coverage-score", "dest": "/public/coverage-score.html" },
+    { "src": "/next-of-kin", "dest": "/public/next-of-kin.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
