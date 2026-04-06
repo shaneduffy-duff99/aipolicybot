@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="m-0 p-0 h-full">
+<head>
+    <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIPolicyBot — Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] }, colors: { brand: { bg:'#0B0C10', surface:'#1A1C23', green:'#10B981', blue:'#3B82F6', amber:'#F59E0B', gold:'#F5C842', border:'rgba(255,255,255,0.05)', text:'#E2E8F0', muted:'#94A3B8' } } } }
+        }
+    </script>
+    <style>
+        body { background-color:#0B0C10; color:#E2E8F0; font-family:'Inter',sans-serif; margin:0; padding:0; min-height:100vh; }
+        .glass-panel { background:rgba(26,28,35,0.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.05); border-radius:12px; }
+        .sidebar-item.active { background:rgba(59,130,246,0.1); color:#3B82F6; border-right:3px solid #3B82F6; }
+        .sidebar-item:hover:not(.active) { background:rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:10px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-brand-text bg-brand-bg">
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 glass-panel border-r border-brand-border flex flex-col h-full rounded-none rounded-r-2xl relative z-20">
+        <div class="p-6 flex items-center space-x-3">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-brand-blue to-brand-green flex items-center justify-center text-white font-bold text-lg shadow-lg"><i class="fa-solid fa-shield-halved"></i></div>
+            <span class="text-xl font-bold tracking-wide text-white">AIPolicyBot</span>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-item active flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-chart-pie w-5 mr-3"></i>Dashboard</a>
+            <a href="my-policies.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-file-contract w-5 mr-3"></i>My Policies</a>
+            <a href="coverage-score.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-bullseye w-5 mr-3"></i>Coverage Score</a>
+            <a href="next-of-kin.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-users w-5 mr-3"></i>Next of Kin</a>
+            <a href="index.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-robot w-5 mr-3"></i>AI Analyser</a>
+        </nav>
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center p-3 rounded-xl bg-brand-surface/50 border border-brand-border/50 cursor-pointer hover:bg-brand-surface transition-colors">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Alex" class="w-10 h-10 rounded-full border-2 border-brand-blue/30 object-cover">
+                <div class="ml-3 flex-1 overflow-hidden"><p class="text-sm font-medium text-white truncate">Alex Mercer</p><p class="text-xs text-brand-muted truncate">Premium Member</p></div>
+                <i class="fa-solid fa-chevron-right text-brand-muted text-xs"></i>
+            </div>
+            <button class="w-full mt-3 flex items-center justify-center px-4 py-2 text-sm text-brand-muted hover:text-white transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Sign Out</button>
+        </div>
+    </aside>
+    <!-- Main -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+        <header class="h-20 flex-shrink-0 flex items-center justify-between px-8 glass-panel rounded-none border-b border-brand-border/50 sticky top-0 z-30">
+            <h1 class="text-2xl font-semibold text-white tracking-tight">Good evening, Alex</h1>
+            <div class="flex items-center space-x-6">
+                <div class="relative hidden md:block">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-muted text-sm"></i>
+                    <input type="text" placeholder="Search policies, alerts..." class="bg-brand-surface/60 border border-brand-border rounded-full pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-brand-blue/50 w-64 transition-all placeholder-brand-muted/70">
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="w-10 h-10 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center text-brand-muted hover:text-white relative">
+                        <i class="fa-regular fa-bell"></i><span class="absolute top-2 right-2 w-2 h-2 bg-brand-amber rounded-full"></span>
+                    </button>
+                    <a href="next-of-kin.html" class="hidden lg:flex items-center px-4 py-2 bg-brand-surface border border-brand-border rounded-lg text-sm font-medium text-white hover:bg-brand-surface/80 transition-colors"><i class="fa-solid fa-plus mr-2 text-brand-blue"></i> Add Next of Kin</a>
+                    <a href="my-policies.html" class="flex items-center px-4 py-2 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-lg text-sm font-medium shadow-lg shadow-brand-blue/20 transition-all"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload Policy</a>
+                </div>
+            </div>
+        </header>
+        <div class="flex-1 overflow-y-auto p-8 space-y-8">
+            <!-- KPI Row -->
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-panel p-6 flex flex-col relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-shield-check text-6xl text-brand-blue"></i></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-medium text-brand-muted">Active Policies</h3><span class="px-2.5 py-1 bg-brand-green/10 text-brand-green text-xs font-medium rounded-full border border-brand-green/20">+2 this year</span></div>
+                    <div class="flex items-end space-x-2"><span class="text-4xl font-bold text-white">4</span><span class="text-sm text-brand-muted mb-1">total</span></div>
+                    <div class="mt-4 w-full h-1 bg-brand-surface rounded-full overflow-hidden"><div class="h-full bg-brand-blue w-full rounded-full"></div></div>
+                </div>
+                <div class="glass-panel p-6 flex flex-col relative group">
+                    <div class="flex items-center justify-between mb-2"><h3 class="text-sm font-medium text-brand-muted">Coverage Score</h3><i class="fa-solid fa-arrow-trend-up text-brand-green text-sm"></i></div>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <div class="relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3"/>
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="85, 100"/>
+                            </svg>
+                            <span class="absolute text-lg font-bold text-white">85</span>
+                        </div>
+                        <div><p class="text-sm text-brand-green font-medium">Excellent</p><p class="text-xs text-brand-muted mt-1">Top 15% of users</p></div>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 flex flex-col relative group">
+                    <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-medium text-brand-muted">Total Coverage Value</h3><div class="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20"><i class="fa-solid fa-dollar-sign text-brand-gold text-sm"></i></div></div>
+                    <div class="flex items-end space-x-2"><span class="text-3xl font-bold text-white">$1.2M</span></div>
+                    <p class="text-xs text-brand-muted mt-3"><i class="fa-solid fa-lock text-brand-muted/70 mr-1"></i> Fully verified</p>
+                </div>
+                <a href="next-of-kin.html" class="glass-panel p-6 flex flex-col relative group hover:border-brand-amber/30 transition-colors cursor-pointer">
+                    <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-medium text-brand-muted">Next of Kin Status</h3><span class="px-2.5 py-1 bg-brand-amber/10 text-brand-amber text-xs font-medium rounded-full border border-brand-amber/20">Action Needed</span></div>
+                    <div class="flex items-center space-x-3 mt-1">
+                        <div class="flex -space-x-2">
+                            <img class="w-8 h-8 rounded-full border-2 border-brand-surface object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User">
+                            <div class="w-8 h-8 rounded-full border-2 border-brand-surface bg-brand-surface/80 flex items-center justify-center text-xs text-brand-muted border-dashed"><i class="fa-solid fa-plus"></i></div>
+                        </div>
+                        <span class="text-sm text-white font-medium">1 Configured</span>
+                    </div>
+                    <p class="text-xs text-brand-muted mt-3">Recommend adding secondary →</p>
+                </a>
+            </section>
+            <!-- Charts + Alerts -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <section class="glass-panel p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div><h2 class="text-lg font-semibold text-white">Coverage Intelligence</h2><p class="text-sm text-brand-muted mt-1">AI analysis of your current protection portfolio</p></div>
+                            <button class="px-3 py-1.5 bg-brand-surface border border-brand-border rounded-md text-xs text-brand-muted hover:text-white transition-colors"><i class="fa-solid fa-download mr-1"></i> Report</button>
+                        </div>
+                        <div class="h-[300px] w-full" id="coverage-chart"></div>
+                    </section>
+                    <section class="glass-panel p-6">
+                        <div class="flex items-center justify-between mb-6"><h2 class="text-lg font-semibold text-white">Action Items & Gaps</h2><span class="bg-brand-amber/10 text-brand-amber text-xs px-2 py-1 rounded-full border border-brand-amber/20">2 Pending</span></div>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-brand-surface/50 border border-brand-amber/20 flex items-start space-x-4 hover:bg-brand-surface transition-colors cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-brand-amber/10 flex items-center justify-center flex-shrink-0 border border-brand-amber/20 mt-1"><i class="fa-solid fa-triangle-exclamation text-brand-amber"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-white">Life Insurance Gap Detected</h4>
+                                    <p class="text-xs text-brand-muted mt-1 leading-relaxed">Based on your recent mortgage update, your current life insurance policy leaves a $250k coverage gap.</p>
+                                    <div class="mt-3 flex space-x-3"><a href="my-policies.html" class="text-xs font-medium text-brand-amber hover:text-brand-amber/80">Review Options</a></div>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-brand-surface/50 border border-brand-blue/20 flex items-start space-x-4 hover:bg-brand-surface transition-colors cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center flex-shrink-0 border border-brand-blue/20 mt-1"><i class="fa-solid fa-arrows-rotate text-brand-blue"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-white">Auto Policy Renewal Approaching</h4>
+                                    <p class="text-xs text-brand-muted mt-1 leading-relaxed">Your GEICO auto policy expires in 45 days. AI scan shows potential 15% savings.</p>
+                                    <div class="mt-3"><a href="my-policies.html" class="text-xs font-medium text-brand-blue hover:text-brand-blue/80">Compare Rates</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="space-y-8">
+                    <section class="glass-panel p-6 flex flex-col">
+                        <div class="flex items-center justify-between mb-6"><h2 class="text-lg font-semibold text-white">Recent Activity</h2></div>
+                        <div class="flex-1 space-y-5">
+                            <div class="flex gap-3"><div class="w-9 h-9 rounded-full bg-brand-surface border border-brand-green/30 flex items-center justify-center text-brand-green flex-shrink-0"><i class="fa-solid fa-robot text-xs"></i></div><div><p class="text-sm font-medium text-white">AI Policy Scan</p><p class="text-xs text-brand-muted mt-0.5">Completed analysis of Homeowners policy.</p><p class="text-[10px] text-brand-muted/60 mt-1">2h ago</p></div></div>
+                            <div class="flex gap-3"><div class="w-9 h-9 rounded-full bg-brand-surface border border-brand-blue/30 flex items-center justify-center text-brand-blue flex-shrink-0"><i class="fa-solid fa-user-shield text-xs"></i></div><div><p class="text-sm font-medium text-white">Emergency Access</p><p class="text-xs text-brand-muted mt-0.5">Vault access granted to Sarah Mercer.</p><p class="text-[10px] text-brand-muted/60 mt-1">1d ago</p></div></div>
+                            <div class="flex gap-3"><div class="w-9 h-9 rounded-full bg-brand-surface border border-brand-gold/30 flex items-center justify-center text-brand-gold flex-shrink-0"><i class="fa-solid fa-file-invoice text-xs"></i></div><div><p class="text-sm font-medium text-white">Premium Paid</p><p class="text-xs text-brand-muted mt-0.5">Auto-pay processed ($450.00).</p><p class="text-[10px] text-brand-muted/60 mt-1">3d ago</p></div></div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-brand-border/50 grid grid-cols-2 gap-3">
+                            <a href="my-policies.html" class="flex items-center justify-center px-3 py-2.5 bg-brand-surface border border-brand-border rounded-lg text-xs font-medium text-white hover:bg-brand-surface/80 transition-colors"><i class="fa-solid fa-file-contract mr-2 text-brand-blue"></i>My Policies</a>
+                            <a href="coverage-score.html" class="flex items-center justify-center px-3 py-2.5 bg-brand-surface border border-brand-border rounded-lg text-xs font-medium text-white hover:bg-brand-surface/80 transition-colors"><i class="fa-solid fa-bullseye mr-2 text-brand-green"></i>Coverage Score</a>
+                            <a href="next-of-kin.html" class="flex items-center justify-center px-3 py-2.5 bg-brand-surface border border-brand-border rounded-lg text-xs font-medium text-white hover:bg-brand-surface/80 transition-colors"><i class="fa-solid fa-users mr-2 text-brand-amber"></i>Next of Kin</a>
+                            <a href="index.html" class="flex items-center justify-center px-3 py-2.5 bg-brand-blue/10 border border-brand-blue/30 rounded-lg text-xs font-medium text-brand-blue hover:bg-brand-blue/20 transition-colors"><i class="fa-solid fa-robot mr-2"></i>AI Analyser</a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function initCharts() {
+            try {
+                Plotly.newPlot('coverage-chart', [
+                    {x:['Jan','Feb','Mar','Apr','May','Jun'],y:[65,70,68,80,82,85],type:'scatter',mode:'lines',fill:'tozeroy',name:'Coverage Score',line:{color:'#10B981',width:3,shape:'spline'},fillcolor:'rgba(16,185,129,0.1)'},
+                    {x:['Jan','Feb','Mar','Apr','May','Jun'],y:[50,50,50,75,75,75],type:'scatter',mode:'lines',name:'Industry Avg',line:{color:'#3B82F6',width:2,dash:'dash',shape:'spline'}}
+                ], {margin:{t:20,r:20,b:40,l:40},plot_bgcolor:'transparent',paper_bgcolor:'transparent',showlegend:true,legend:{orientation:'h',y:-0.2,font:{color:'#94A3B8'}},xaxis:{showgrid:false,color:'#94A3B8'},yaxis:{showgrid:true,gridcolor:'rgba(255,255,255,0.05)',color:'#94A3B8',range:[0,100]},hovermode:'x unified'}, {responsive:true,displayModeBar:false});
+            } catch(e) {}
+        }
+        window.addEventListener('load', initCharts);
+        setTimeout(initCharts, 1000);
+    </script>
+</body>
+</html>

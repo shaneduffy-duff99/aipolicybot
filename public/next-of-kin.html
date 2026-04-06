@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="m-0 p-0 h-full">
+<head>
+    <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIPolicyBot — Next of Kin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{brand:{bg:'#0B0C10',surface:'#1A1C23',green:'#10B981',blue:'#3B82F6',amber:'#F59E0B',gold:'#F5C842',border:'rgba(255,255,255,0.05)',text:'#E2E8F0',muted:'#94A3B8'}}}}}</script>
+    <style>
+        body{background-color:#0B0C10;color:#E2E8F0;font-family:'Inter',sans-serif;margin:0;padding:0;min-height:100vh;}
+        .glass-panel{background:rgba(26,28,35,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.05);border-radius:12px;}
+        .sidebar-item.active{background:rgba(59,130,246,0.1);color:#3B82F6;border-right:3px solid #3B82F6;}
+        .sidebar-item:hover:not(.active){background:rgba(255,255,255,0.02);}
+        ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px;}
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-brand-text bg-brand-bg">
+    <aside class="w-64 flex-shrink-0 glass-panel border-r border-brand-border flex flex-col h-full rounded-none rounded-r-2xl relative z-20 hidden md:flex">
+        <div class="p-6 flex items-center space-x-3">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-brand-blue to-brand-green flex items-center justify-center text-white font-bold text-lg shadow-lg"><i class="fa-solid fa-shield-halved"></i></div>
+            <span class="text-xl font-bold tracking-wide text-white">AIPolicyBot</span>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-chart-pie w-5 mr-3"></i>Dashboard</a>
+            <a href="my-policies.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-file-contract w-5 mr-3"></i>My Policies</a>
+            <a href="coverage-score.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-bullseye w-5 mr-3"></i>Coverage Score</a>
+            <a href="next-of-kin.html" class="sidebar-item active flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-users w-5 mr-3"></i>Next of Kin</a>
+            <a href="index.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-robot w-5 mr-3"></i>AI Analyser</a>
+        </nav>
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center p-3 rounded-xl bg-brand-surface/50 border border-brand-border/50 cursor-pointer hover:bg-brand-surface transition-colors">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Alex" class="w-10 h-10 rounded-full border-2 border-brand-blue/30 object-cover">
+                <div class="ml-3 flex-1 overflow-hidden"><p class="text-sm font-medium text-white truncate">Alex Mercer</p><p class="text-xs text-brand-muted truncate">Premium Member</p></div>
+            </div>
+            <button class="w-full mt-3 flex items-center justify-center px-4 py-2 text-sm text-brand-muted hover:text-white transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>Sign Out</button>
+        </div>
+    </aside>
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+        <header class="h-20 flex-shrink-0 flex items-center justify-between px-4 md:px-8 glass-panel rounded-none border-b border-brand-border/50 sticky top-0 z-30">
+            <h1 class="text-xl md:text-2xl font-semibold text-white tracking-tight">Next of Kin</h1>
+            <div class="flex items-center space-x-3">
+                <button class="w-10 h-10 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center text-brand-muted hover:text-white relative"><i class="fa-regular fa-bell"></i><span class="absolute top-2 right-2 w-2 h-2 bg-brand-amber rounded-full"></span></button>
+                <button class="flex items-center px-4 py-2 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-lg text-sm font-medium shadow-lg transition-all"><i class="fa-solid fa-user-plus mr-2"></i>Add Contact</button>
+            </div>
+        </header>
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative flex flex-col lg:flex-row gap-6">
+            <!-- Left: Contact List -->
+            <div class="w-full lg:w-80 flex-shrink-0 flex flex-col gap-4">
+                <div class="flex items-center justify-between mb-2"><h2 class="text-lg font-semibold text-white">Contacts</h2><span class="text-xs bg-brand-surface border border-brand-border px-2 py-1 rounded text-brand-muted">3 Total</span></div>
+                <div class="relative mb-2"><i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-muted text-sm"></i><input type="text" placeholder="Search contacts..." class="w-full bg-brand-surface/50 border border-brand-border rounded-lg py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-brand-blue/50 transition-colors placeholder-brand-muted"></div>
+                <div class="space-y-3">
+                    <div class="glass-panel p-4 border-brand-blue/50 bg-brand-blue/5 cursor-pointer transition-all relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-brand-blue"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3"><img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Sarah" class="w-10 h-10 rounded-full border border-brand-border object-cover"><div><h3 class="text-sm font-semibold text-white">Sarah Mercer</h3><p class="text-xs text-brand-gold mt-0.5">Spouse</p></div></div>
+                            <span class="px-2 py-1 bg-brand-green/10 text-brand-green text-[10px] font-medium rounded border border-brand-green/20">Verified</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 hover:border-brand-border/80 cursor-pointer transition-all">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3"><img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="David" class="w-10 h-10 rounded-full border border-brand-border object-cover opacity-80"><div><h3 class="text-sm font-semibold text-white">David Mercer</h3><p class="text-xs text-brand-blue mt-0.5">Brother</p></div></div>
+                            <span class="px-2 py-1 bg-brand-amber/10 text-brand-amber text-[10px] font-medium rounded border border-brand-amber/20">Invited</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 hover:border-brand-border/80 cursor-pointer transition-all">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3"><div class="w-10 h-10 rounded-full border border-brand-border bg-brand-surface flex items-center justify-center text-brand-muted"><i class="fa-solid fa-user"></i></div><div><h3 class="text-sm font-semibold text-white">Emma Thompson</h3><p class="text-xs text-brand-muted mt-0.5">Attorney</p></div></div>
+                            <span class="px-2 py-1 bg-brand-surface text-brand-muted text-[10px] font-medium rounded border border-brand-border">Draft</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Detail -->
+            <div class="flex-1 flex flex-col gap-6 min-w-0">
+                <div class="glass-panel p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center space-x-4">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Sarah" class="w-16 h-16 rounded-full border-2 border-brand-blue/30 object-cover">
+                            <div>
+                                <h2 class="text-xl font-bold text-white flex items-center gap-2">Sarah Mercer <i class="fa-solid fa-circle-check text-brand-green text-sm"></i></h2>
+                                <p class="text-sm text-brand-gold mt-1 flex items-center gap-2"><i class="fa-solid fa-heart text-xs"></i>Primary Spouse</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="px-4 py-2 bg-brand-surface border border-brand-border hover:border-brand-muted rounded-lg text-sm font-medium text-white transition-colors"><i class="fa-solid fa-pen mr-2"></i>Edit</button>
+                            <button class="px-4 py-2 bg-brand-surface border border-brand-border hover:border-brand-amber/50 hover:text-brand-amber rounded-lg text-sm font-medium text-brand-muted transition-colors" onclick="document.getElementById('revoke-modal').classList.remove('hidden');document.getElementById('revoke-modal').style.display='flex'"><i class="fa-solid fa-ban mr-2"></i>Revoke</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-brand-border/50">
+                        <div class="space-y-4">
+                            <div><span class="text-xs text-brand-muted block mb-1">Email Address</span><span class="text-sm text-white">sarah.m@example.com</span></div>
+                            <div><span class="text-xs text-brand-muted block mb-1">Phone Number</span><span class="text-sm text-white">+1 (555) 123-4567</span></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><span class="text-xs text-brand-muted block mb-1">Physical Address</span><span class="text-sm text-white">123 Horizon Lane, Austin, TX 78701</span></div>
+                            <div><span class="text-xs text-brand-muted block mb-1">Verification Status</span><div class="flex items-center gap-2 mt-1"><div class="h-1.5 w-16 bg-brand-green rounded-full"></div><div class="h-1.5 w-16 bg-brand-green rounded-full"></div><div class="h-1.5 w-16 bg-brand-green rounded-full"></div><span class="text-xs text-brand-green ml-2">Level 3 Complete</span></div></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Policy Assignment -->
+                <div class="glass-panel p-6">
+                    <div class="flex items-center justify-between mb-6"><div><h3 class="text-lg font-semibold text-white">Policy Access Assignment</h3><p class="text-xs text-brand-muted mt-1">Select which policies this contact can view during an emergency.</p></div></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="border-b border-brand-border/50 text-xs text-brand-muted uppercase tracking-wider"><th class="pb-3 font-medium">Policy</th><th class="pb-3 font-medium text-center">Grant Access</th><th class="pb-3 font-medium">Role</th><th class="pb-3 font-medium text-right">Scope</th></tr></thead>
+                            <tbody class="text-sm">
+                                <tr class="border-b border-brand-border/20 hover:bg-brand-surface/30 transition-colors">
+                                    <td class="py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-brand-amber/10 border border-brand-amber/20 flex items-center justify-center"><i class="fa-solid fa-leaf text-brand-amber text-xs"></i></div><div><p class="text-white font-medium">Term Life Insurance</p><p class="text-xs text-brand-muted">Prudential • $1M</p></div></div></td>
+                                    <td class="py-4 text-center"><label class="relative inline-block w-10 h-5"><input type="checkbox" class="opacity-0 w-0 h-0 peer" checked><span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-brand-surface border border-brand-border rounded-full duration-300 peer-checked:bg-brand-green peer-checked:border-brand-green before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-[3px] before:bottom-[2px] before:bg-white before:rounded-full before:duration-300 peer-checked:before:translate-x-5"></span></label></td>
+                                    <td class="py-4"><select class="bg-brand-surface border border-brand-border text-white text-xs rounded px-2 py-1 focus:outline-none"><option selected>Primary Beneficiary</option><option>Secondary</option><option>Viewer Only</option></select></td>
+                                    <td class="py-4 text-right"><span class="text-xs text-brand-muted bg-brand-surface px-2 py-1 rounded border border-brand-border">Full Details</span></td>
+                                </tr>
+                                <tr class="border-b border-brand-border/20 hover:bg-brand-surface/30 transition-colors">
+                                    <td class="py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center"><i class="fa-solid fa-house text-brand-blue text-xs"></i></div><div><p class="text-white font-medium">Homeowners Policy</p><p class="text-xs text-brand-muted">State Farm • Austin TX</p></div></div></td>
+                                    <td class="py-4 text-center"><label class="relative inline-block w-10 h-5"><input type="checkbox" class="opacity-0 w-0 h-0 peer" checked><span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-brand-surface border border-brand-border rounded-full duration-300 peer-checked:bg-brand-green peer-checked:border-brand-green before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-[3px] before:bottom-[2px] before:bg-white before:rounded-full before:duration-300 peer-checked:before:translate-x-5"></span></label></td>
+                                    <td class="py-4"><select class="bg-brand-surface border border-brand-border text-white text-xs rounded px-2 py-1 focus:outline-none"><option>Primary</option><option selected>Co-Owner</option><option>Viewer Only</option></select></td>
+                                    <td class="py-4 text-right"><span class="text-xs text-brand-muted bg-brand-surface px-2 py-1 rounded border border-brand-border">Summary Only</span></td>
+                                </tr>
+                                <tr class="hover:bg-brand-surface/30 transition-colors">
+                                    <td class="py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-brand-green/10 border border-brand-green/20 flex items-center justify-center"><i class="fa-solid fa-heart-pulse text-brand-green text-xs"></i></div><div><p class="text-white font-medium">Health Insurance</p><p class="text-xs text-brand-muted">BlueCross • Family Plan</p></div></div></td>
+                                    <td class="py-4 text-center"><label class="relative inline-block w-10 h-5"><input type="checkbox" class="opacity-0 w-0 h-0 peer"><span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-brand-surface border border-brand-border rounded-full duration-300 peer-checked:bg-brand-green peer-checked:border-brand-green before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-[3px] before:bottom-[2px] before:bg-white before:rounded-full before:duration-300 peer-checked:before:translate-x-5"></span></label></td>
+                                    <td class="py-4"><span class="text-xs text-brand-muted italic">Not Assigned</span></td>
+                                    <td class="py-4 text-right"><span class="text-xs text-brand-muted/50">-</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Emergency Protocol -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2"><i class="fa-solid fa-lock text-brand-blue"></i>Emergency Access Protocol</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="text-sm font-medium text-white block mb-2">Access Trigger Method</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-3 border border-brand-blue bg-brand-blue/5 rounded-lg cursor-pointer"><input type="radio" name="trigger" class="mr-3" checked><div><span class="block text-sm text-white">Inactivity Timer</span><span class="block text-xs text-brand-muted mt-0.5">Grants access if you don't respond for 72 hours.</span></div></label>
+                                    <label class="flex items-center p-3 border border-brand-border bg-brand-surface/30 hover:bg-brand-surface/50 rounded-lg cursor-pointer"><input type="radio" name="trigger" class="mr-3"><div><span class="block text-sm text-white">Notarized Event</span><span class="block text-xs text-brand-muted mt-0.5">Requires upload of death certificate or medical form.</span></div></label>
+                                    <label class="flex items-center p-3 border border-brand-border bg-brand-surface/30 hover:bg-brand-surface/50 rounded-lg cursor-pointer"><input type="radio" name="trigger" class="mr-3"><div><span class="block text-sm text-white">Secure PIN</span><span class="block text-xs text-brand-muted mt-0.5">Immediate access using a pre-shared 8-digit PIN.</span></div></label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-white block mb-2">Time-Limited Access</label>
+                                <div class="flex items-center justify-between p-3 border border-brand-border bg-brand-surface/30 rounded-lg">
+                                    <div class="flex items-center gap-2"><i class="fa-regular fa-clock text-brand-muted"></i><span class="text-sm text-white">Access Window</span></div>
+                                    <select class="bg-brand-surface border border-brand-border text-white text-sm rounded px-3 py-1.5 focus:outline-none"><option>30 Days</option><option selected>90 Days</option><option>1 Year</option><option>Indefinite</option></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="p-4 border border-brand-border bg-brand-surface/30 rounded-lg">
+                                <h4 class="text-sm font-medium text-white mb-3">Security Toggles</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between"><div><span class="text-sm text-white block">Allow Document Download</span><span class="text-xs text-brand-muted">Contact can download PDFs.</span></div><label class="relative inline-block w-10 h-5"><input type="checkbox" class="opacity-0 w-0 h-0 peer" checked><span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-brand-surface border border-brand-border rounded-full duration-300 peer-checked:bg-brand-blue peer-checked:border-brand-blue before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-[3px] before:bottom-[2px] before:bg-white before:rounded-full before:duration-300 peer-checked:before:translate-x-5"></span></label></div>
+                                    <div class="flex items-center justify-between"><div><span class="text-sm text-white block">Require 2FA on Access</span><span class="text-xs text-brand-muted">Force SMS/App auth during emergency login.</span></div><label class="relative inline-block w-10 h-5"><input type="checkbox" class="opacity-0 w-0 h-0 peer" checked><span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-brand-surface border border-brand-border rounded-full duration-300 peer-checked:bg-brand-blue peer-checked:border-brand-blue before:absolute before:content-[''] before:h-3.5 before:w-3.5 before:left-[3px] before:bottom-[2px] before:bg-white before:rounded-full before:duration-300 peer-checked:before:translate-x-5"></span></label></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white mb-3">Audit Log</h4>
+                                <div class="space-y-3">
+                                    <div class="flex gap-3"><div class="w-1.5 h-1.5 rounded-full bg-brand-green mt-1.5"></div><div><p class="text-xs text-white">Identity Verification Completed</p><p class="text-[10px] text-brand-muted">Oct 12, 2023 • 14:32 EST</p></div></div>
+                                    <div class="flex gap-3"><div class="w-1.5 h-1.5 rounded-full bg-brand-blue mt-1.5"></div><div><p class="text-xs text-white">Added to Term Life Policy</p><p class="text-[10px] text-brand-muted">Oct 10, 2023 • 09:15 EST</p></div></div>
+                                    <div class="flex gap-3"><div class="w-1.5 h-1.5 rounded-full bg-brand-muted mt-1.5"></div><div><p class="text-xs text-white">Invitation Sent</p><p class="text-[10px] text-brand-muted">Oct 09, 2023 • 11:00 EST</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-brand-border/50 flex justify-end">
+                        <button class="px-6 py-2.5 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-lg text-sm font-medium shadow-lg shadow-brand-blue/20 transition-all">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Revoke Modal -->
+    <div id="revoke-modal" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="this.parentElement.style.display='none'"></div>
+        <div class="relative glass-panel w-full max-w-md p-6 m-4 border-brand-amber/30">
+            <div class="w-12 h-12 rounded-full bg-brand-amber/10 border border-brand-amber/20 flex items-center justify-center mb-4"><i class="fa-solid fa-triangle-exclamation text-brand-amber text-xl"></i></div>
+            <h3 class="text-lg font-bold text-white mb-2">Revoke Access?</h3>
+            <p class="text-sm text-brand-muted mb-6">Are you sure you want to revoke all policy access for <strong>Sarah Mercer</strong>? They will be notified of this change.</p>
+            <div class="flex space-x-3 justify-end">
+                <button class="px-4 py-2 bg-brand-surface border border-brand-border hover:bg-brand-surface/80 rounded-lg text-sm font-medium text-white transition-colors" onclick="document.getElementById('revoke-modal').style.display='none'">Cancel</button>
+                <button class="px-4 py-2 bg-brand-amber/20 border border-brand-amber text-brand-amber hover:bg-brand-amber hover:text-white rounded-lg text-sm font-medium transition-colors" onclick="document.getElementById('revoke-modal').style.display='none'">Confirm Revoke</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
