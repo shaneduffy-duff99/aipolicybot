@@ -4,7 +4,7 @@
     <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIPolicyBot — Coverage Score</title>
+    <title>MyPoli.ai — Coverage Score</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
@@ -20,9 +20,28 @@
 </head>
 <body class="flex h-screen overflow-hidden text-brand-text bg-brand-bg">
     <aside class="w-64 flex-shrink-0 glass-panel border-r border-brand-border flex flex-col h-full rounded-none rounded-r-2xl relative z-20 hidden md:flex">
-        <div class="p-6 flex items-center space-x-3">
-            <div class="w-8 h-8 rounded bg-gradient-to-br from-brand-blue to-brand-green flex items-center justify-center text-white font-bold text-lg shadow-lg"><i class="fa-solid fa-shield-halved"></i></div>
-            <span class="text-xl font-bold tracking-wide text-white">AIPolicyBot</span>
+        <div class="p-6 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" width="180" height="44" style="display:block">
+  <defs>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g transform="translate(2,1)">
+    <path d="M22 2 L2 10 L2 30 C2 42 22 50 22 50 C22 50 42 42 42 30 L42 10 Z" fill="url(#sg)" opacity="0.18"/>
+    <path d="M22 2 L2 10 L2 30 C2 42 22 50 22 50 C22 50 42 42 42 30 L42 10 Z" fill="none" stroke="url(#sg)" stroke-width="2"/>
+    <polyline points="12,26 20,34 32,18" fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#gl)"/>
+  </g>
+  <text x="54" y="34" font-family="Helvetica Neue,Arial,sans-serif" font-size="26" font-weight="300" fill="#6B7280">my</text>
+  <text x="82" y="34" font-family="Helvetica Neue,Arial,sans-serif" font-size="26" font-weight="700" fill="#F3F4F6">poli</text>
+  <text x="140" y="34" font-family="Helvetica Neue,Arial,sans-serif" font-size="26" font-weight="700" fill="url(#tg)">.ai</text>
+</svg>
         </div>
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             <a href="dashboard.html" class="sidebar-item flex items-center px-4 py-3 rounded-lg text-brand-muted text-sm font-medium transition-colors mb-1"><i class="fa-solid fa-chart-pie w-5 mr-3"></i>Dashboard</a>
