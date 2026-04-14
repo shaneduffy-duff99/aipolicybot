@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broker Settings - BrokerOS</title>
+    <!-- Nav helper -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        dark: {
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151',
+                            600: '#4b5563',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+                        'card': '0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 4px 16px -4px rgba(0, 0, 0, 0.02)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar { display: none; }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            display: block;
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #22c55e;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #22c55e;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex m-0 p-0 text-dark-800">
+
+    <!-- Sidebar Navigation (Preserved from prior context style, Broker Settings Active) -->
+    <aside id="sidebar_navigation" class="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 flex flex-col z-20 flex-shrink-0 hidden md:flex">
+        <div class="p-6 flex items-center gap-2 border-b border-gray-100">
+            <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-layer-group text-white text-sm"></i>
+            </div>
+            <span class="text-xl font-bold text-dark-900 tracking-tight">BrokerOS</span>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+            <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-3">Main Menu</div>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-vault w-5 text-center"></i>
+                Secure Policy Vault
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-file-invoice w-5 text-center"></i>
+                Claims Center
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-store w-5 text-center"></i>
+                Marketplace
+            </a>
+            
+            <div class="mt-8 mb-3 px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Administration</div>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-primary-50 text-primary-700 rounded-lg font-medium transition-colors border border-primary-100">
+                <i class="fa-solid fa-gear w-5 text-center"></i>
+                Broker Settings
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Broker Avatar" class="w-8 h-8 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-dark-900 truncate">James Whitmore</p>
+                    <p class="text-xs text-gray-500 truncate">Senior Broker</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    
+<!-- Top navigation bar -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:white;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-family:Inter,sans-serif;font-size:13px">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:28px;height:28px;border-radius:6px;background:#10B981;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700">S</div>
+    <span style="font-weight:600;color:#0f172a">Shields Insurance Group</span>
+    <span style="color:#94a3b8;font-size:11px">· Broker Portal</span>
+  </div>
+  <div style="display:flex;gap:4px">
+    <a href="/whitelabel/dashboard.html" style="padding:5px 12px;border-radius:6px;color:#475569;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">Dashboard</a>
+    <a href="/whitelabel/marketplace.html" style="padding:5px 12px;border-radius:6px;color:#475569;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">Marketplace</a>
+    <a href="/whitelabel/broker-settings.html" style="padding:5px 12px;border-radius:6px;color:#475569;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">Settings</a>
+    <a href="/whitelabel/broker-signin.html" style="padding:5px 12px;border-radius:6px;background:#f1f5f9;color:#475569;text-decoration:none">Sign Out</a>
+  </div>
+</div>
+<div style="height:52px"></div>
+<main id="main_content" class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#f9fafb] relative h-screen">
+        
+        <!-- Header -->
+        <header id="top_header" class="bg-white border-b border-gray-200 sticky top-0 z-10 px-6 py-4 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-4 flex-1">
+                <button class="md:hidden text-gray-500 hover:text-dark-900">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-dark-900">Settings</h2>
+                        <p class="text-xs text-gray-500">Personalize your account and manage preferences securely.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="relative hidden md:block">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" placeholder="Search.." class="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary-500 w-64">
+                </div>
+                <button class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div class="max-w-7xl mx-auto">
+                
+                <div class="flex flex-col lg:flex-row gap-8">
+                    
+                    <!-- Left Column: Settings Navigation & Branding -->
+                    <div class="w-full lg:w-1/3 space-y-6">
+                        
+                        <!-- Settings Navigation Card -->
+                        <div class="bg-white rounded-[14px] shadow-card border border-gray-100 p-2">
+                            <nav class="space-y-1">
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-primary-50 text-primary-700 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-paint-roller w-5 text-center"></i>
+                                    Branding & Tenant
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-users-gear w-5 text-center"></i>
+                                    User & Role Management
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                                    Access & Security
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-bell w-5 text-center"></i>
+                                    Notifications
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-dark-900 rounded-lg font-medium transition-colors">
+                                    <i class="fa-solid fa-plug w-5 text-center"></i>
+                                    Integrations & Audit
+                                </a>
+                            </nav>
+                        </div>
+
+                        <!-- Branding & Tenant Configuration -->
+                        <div id="branding_section" class="bg-white rounded-[14px] shadow-card border border-gray-100 p-6">
+                            <h3 class="text-base font-bold text-dark-900 mb-6">Branding & Identity</h3>
+                            
+                            <div class="flex flex-col items-center justify-center mb-8">
+                                <div class="relative group cursor-pointer">
+                                    <div class="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden mb-3">
+                                        <div class="text-center group-hover:hidden">
+                                            <i class="fa-solid fa-camera text-gray-400 text-xl mb-1"></i>
+                                        </div>
+                                        <div class="hidden group-hover:flex absolute inset-0 bg-black/50 items-center justify-center text-white text-xs font-medium">
+                                            Upload Logo
+                                        </div>
+                                    </div>
+                                    <button class="text-sm font-medium text-primary-600 hover:text-primary-700 w-full text-center">Upload photo</button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-2">Tenant Name</label>
+                                    <input type="text" value="Acme Insurance Brokers" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-dark-900 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-shadow">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-2">Custom Domain</label>
+                                    <div class="flex">
+                                        <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-200 bg-gray-50 text-gray-500 text-sm">
+                                            https://
+                                        </span>
+                                        <input type="text" value="portal.acmeinsurance.com" class="flex-1 border border-gray-200 rounded-r-lg px-4 py-2.5 text-dark-900 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-shadow">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 mb-2">Primary Color</label>
+                                        <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
+                                            <div class="w-6 h-6 rounded bg-primary-600 border border-gray-200"></div>
+                                            <input type="text" value="#16a34a" class="w-full text-dark-900 text-sm focus:outline-none bg-transparent">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 mb-2">Secondary Color</label>
+                                        <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
+                                            <div class="w-6 h-6 rounded bg-dark-900 border border-gray-200"></div>
+                                            <input type="text" value="#111827" class="w-full text-dark-900 text-sm focus:outline-none bg-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                                <p class="text-xs text-gray-500 w-2/3">Review your brand settings before saving.</p>
+                                <div class="flex gap-3">
+                                    <button class="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">Cancel</button>
+                                    <button class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Security, Roles, Notifications -->
+                    <div class="w-full lg:w-2/3 space-y-6">
+                        
+                        <!-- Access & Security -->
+                        <div id="security_section" class="bg-white rounded-[14px] shadow-card border border-gray-100 p-6">
+                            <h3 class="text-base font-bold text-dark-900 mb-6">Account & Security</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between pb-6 border-b border-gray-100">
+                                    <div>
+                                        <p class="text-sm font-medium text-dark-900">Password</p>
+                                        <p class="text-xs text-gray-500 mt-1">Last changed 3 months ago</p>
+                                    </div>
+                                    <button class="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-key"></i> Change Password
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-6 border-b border-gray-100">
+                                    <div>
+                                        <p class="text-sm font-medium text-dark-900">Manage Logged Devices</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 active sessions</p>
+                                    </div>
+                                    <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-700">View all active logins</a>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-6 border-b border-gray-100">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-medium text-dark-900">Two-Factor Authentication (2FA)</p>
+                                            <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Extra security via OTP/email</p>
+                                    </div>
+                                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="toggle" id="mfa_toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 z-10 transition-transform duration-200 ease-in-out"/>
+                                        <label for="mfa_toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-medium text-dark-900">Session Timeout</p>
+                                            <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Automatically log out inactive users</p>
+                                    </div>
+                                    <select class="border border-gray-200 rounded-lg px-4 py-2 text-dark-900 text-sm focus:outline-none focus:border-primary-500">
+                                        <option>15 Minutes</option>
+                                        <option selected>30 Minutes</option>
+                                        <option>1 Hour</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User & Role Management Table -->
+                        <div id="roles_section" class="bg-white rounded-[14px] shadow-card border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 class="text-base font-bold text-dark-900">User Data Access Permissions</h3>
+                                    <p class="text-xs text-gray-500 mt-1">Set permissions for other team members in your brokerage</p>
+                                </div>
+                                <button class="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-user-plus"></i> Add Member
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- User Row 1 -->
+                                <div class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                        <div>
+                                            <p class="text-sm font-bold text-dark-900">Sarah Jenkins</p>
+                                            <p class="text-xs text-gray-500">Senior Agent</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <select class="border border-gray-200 rounded-lg px-3 py-1.5 text-dark-900 text-sm focus:outline-none focus:border-primary-500 bg-white">
+                                            <option selected>Full Access</option>
+                                            <option>View Only</option>
+                                            <option>Restricted</option>
+                                        </select>
+                                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-dark-900 rounded-lg hover:bg-gray-200 transition-colors">
+                                            <i class="fa-solid fa-ellipsis"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- User Row 2 -->
+                                <div class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                        <div>
+                                            <p class="text-sm font-bold text-dark-900">Michael Chen</p>
+                                            <p class="text-xs text-gray-500">Support Staff</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <select class="border border-gray-200 rounded-lg px-3 py-1.5 text-dark-900 text-sm focus:outline-none focus:border-primary-500 bg-white">
+                                            <option>Full Access</option>
+                                            <option selected>View Only</option>
+                                            <option>Restricted</option>
+                                        </select>
+                                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-dark-900 rounded-lg hover:bg-gray-200 transition-colors">
+                                            <i class="fa-solid fa-ellipsis"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- User Row 3 -->
+                                <div class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                        <div>
+                                            <p class="text-sm font-bold text-dark-900">Emily Rodriguez</p>
+                                            <p class="text-xs text-gray-500">Compliance Officer</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <select class="border border-gray-200 rounded-lg px-3 py-1.5 text-dark-900 text-sm focus:outline-none focus:border-primary-500 bg-white">
+                                            <option>Full Access</option>
+                                            <option selected>Audit Access</option>
+                                            <option>Restricted</option>
+                                        </select>
+                                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-dark-900 rounded-lg hover:bg-gray-200 transition-colors">
+                                            <i class="fa-solid fa-ellipsis"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Integrations & Audit Export -->
+                        <div id="audit_section" class="bg-white rounded-[14px] shadow-card border border-gray-100 p-6">
+                            <h3 class="text-base font-bold text-dark-900 mb-6">Integrations & Audit</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between pb-6 border-b border-gray-100">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-medium text-dark-900">Enable Activity Log</p>
+                                            <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Track actions like logins, exports, and policy views</p>
+                                    </div>
+                                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="toggle" id="log_toggle" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 z-10 transition-transform duration-200 ease-in-out"/>
+                                        <label for="log_toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between pb-6 border-b border-gray-100">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-medium text-dark-900">Export Audit Records Format</p>
+                                            <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Download compliance and retention history</p>
+                                    </div>
+                                    <select class="border border-gray-200 rounded-lg px-4 py-2 text-dark-900 text-sm focus:outline-none focus:border-primary-500">
+                                        <option>CSV</option>
+                                        <option selected>PDF</option>
+                                        <option>JSON</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                     <div>
+                                        <p class="text-sm font-medium text-dark-900">Privacy Policy & Terms</p>
+                                    </div>
+                                    <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-700">View legal documents</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
