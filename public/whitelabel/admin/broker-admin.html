@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Broker Admin — Shields Insurance Group</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous"/>
+  <script>
+    const BROKER = { name:"Shields Insurance Group", primaryColor:"#10B981", accentColor:"#3B82F6", phone:"+44 800 123 4567", email:"hello@shieldsinsurance.com" };
+    tailwind.config = { theme:{ extend:{ fontFamily:{ sans:['Inter','sans-serif'] }, colors:{ brand:{ primary:'#10B981', accent:'#3B82F6', dark:'#0f172a', surface:'#f8fafc', border:'#e2e8f0', muted:'#64748b' } } } } }
+  </script>
+  <style>
+    body{background:#f8fafc;font-family:'Inter',sans-serif;margin:0}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#475569;text-decoration:none;transition:all .15s}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a}
+    .sidebar-link.active{background:#ecfdf5;color:#10B981;font-weight:600}
+    .card{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+    .stat-card{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px;transition:box-shadow .2s}
+    .stat-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+<!-- SIDEBAR -->
+<aside style="width:240px;flex-shrink:0;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;height:100vh">
+  <div style="padding:20px 16px;border-bottom:1px solid #e2e8f0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:8px;background:#10B981;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">S</div>
+      <div><p style="font-weight:700;font-size:14px;color:#0f172a;margin:0">Shields Insurance</p><p style="font-size:11px;color:#64748b;margin:0">Broker Admin</p></div>
+    </div>
+  </div>
+  <nav style="flex:1;padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">
+    <a href="/whitelabel/admin/broker-admin.html" class="sidebar-link active"><i class="fa-solid fa-chart-line w-4"></i>Overview</a>
+    <a href="/whitelabel/admin/clients.html" class="sidebar-link"><i class="fa-solid fa-users w-4"></i>Clients</a>
+    <a href="/whitelabel/admin/marketplace-admin.html" class="sidebar-link"><i class="fa-solid fa-store w-4"></i>Marketplace</a>
+    <a href="/whitelabel/admin/content.html" class="sidebar-link"><i class="fa-solid fa-bullhorn w-4"></i>Content & Offers</a>
+    <a href="/whitelabel/admin/settings.html" class="sidebar-link"><i class="fa-solid fa-gear w-4"></i>Settings</a>
+    <div style="margin-top:auto;padding-top:12px;border-top:1px solid #e2e8f0;margin-top:16px">
+      <a href="/whitelabel/dashboard.html" class="sidebar-link"><i class="fa-solid fa-arrow-left w-4"></i>Client Portal</a>
+      <a href="/whitelabel/broker-signin.html" class="sidebar-link" style="color:#ef4444"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
+  <!-- Header -->
+  <header style="background:white;border-bottom:1px solid #e2e8f0;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
+    <div><h1 style="font-size:18px;font-weight:700;color:#0f172a;margin:0">Admin Overview</h1><p style="font-size:12px;color:#64748b;margin:0">Shields Insurance Group · Last updated just now</p></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button style="padding:8px 16px;background:#10B981;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit" onclick="window.location.href='/whitelabel/admin/marketplace-admin.html'">+ Add Product</button>
+      <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" style="width:34px;height:34px;border-radius:50%;border:2px solid #e2e8f0;object-fit:cover">
+    </div>
+  </header>
+
+  <div style="padding:24px 28px;display:flex;flex-direction:column;gap:20px">
+
+    <!-- KPI STATS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <p style="font-size:12px;color:#64748b;margin:0;font-weight:500">Total Clients</p>
+          <div style="width:32px;height:32px;border-radius:8px;background:#ecfdf5;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-users" style="color:#10B981;font-size:13px"></i></div>
+        </div>
+        <p style="font-size:30px;font-weight:800;color:#0f172a;margin:0">247</p>
+        <p style="font-size:11px;color:#10B981;margin:4px 0 0;font-weight:500">↑ 12 this month</p>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <p style="font-size:12px;color:#64748b;margin:0;font-weight:500">Policies Uploaded</p>
+          <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-file-contract" style="color:#3B82F6;font-size:13px"></i></div>
+        </div>
+        <p style="font-size:30px;font-weight:800;color:#0f172a;margin:0">1,043</p>
+        <p style="font-size:11px;color:#3B82F6;margin:4px 0 0;font-weight:500">↑ 89 this month</p>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <p style="font-size:12px;color:#64748b;margin:0;font-weight:500">Avg Coverage Score</p>
+          <div style="width:32px;height:32px;border-radius:8px;background:#fefce8;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-bullseye" style="color:#F59E0B;font-size:13px"></i></div>
+        </div>
+        <p style="font-size:30px;font-weight:800;color:#0f172a;margin:0">71<span style="font-size:16px;font-weight:400;color:#64748b">/100</span></p>
+        <p style="font-size:11px;color:#F59E0B;margin:4px 0 0;font-weight:500">↑ 3pts vs last month</p>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <p style="font-size:12px;color:#64748b;margin:0;font-weight:500">Quote Requests</p>
+          <div style="width:32px;height:32px;border-radius:8px;background:#fdf2f8;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-handshake" style="color:#a855f7;font-size:13px"></i></div>
+        </div>
+        <p style="font-size:30px;font-weight:800;color:#0f172a;margin:0">34</p>
+        <p style="font-size:11px;color:#a855f7;margin:4px 0 0;font-weight:500">↑ 8 this week</p>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <p style="font-size:12px;color:#64748b;margin:0;font-weight:500">Marketplace Clicks</p>
+          <div style="width:32px;height:32px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-store" style="color:#f97316;font-size:13px"></i></div>
+        </div>
+        <p style="font-size:30px;font-weight:800;color:#0f172a;margin:0">218</p>
+        <p style="font-size:11px;color:#f97316;margin:4px 0 0;font-weight:500">↑ 43 this week</p>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+
+      <!-- ACTIVITY FEED -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0">Recent Activity</h2>
+          <a href="/whitelabel/admin/clients.html" style="font-size:12px;color:#10B981;font-weight:500;text-decoration:none">View all clients →</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          ${[
+            ['New client signed up', 'Emma Wilson uploaded 2 policies', '2m ago', '#10B981', 'fa-user-plus'],
+            ['Quote requested', 'Alex Mercer requested a quote for Cyber Shield Pro', '14m ago', '#3B82F6', 'fa-handshake'],
+            ['Policy analysed', 'Sarah Chen — Term Life 20yr analysis complete. Score: 45/100', '32m ago', '#F59E0B', 'fa-robot'],
+            ['Coverage gap detected', 'James O\'Brien — Flood cover gap identified. Marketplace alert sent.', '1h ago', '#f97316', 'fa-triangle-exclamation'],
+            ['New client signed up', 'David Park uploaded 1 policy', '2h ago', '#10B981', 'fa-user-plus'],
+            ['Quote requested', 'Sarah Chen requested income protection quote', '3h ago', '#3B82F6', 'fa-handshake'],
+            ['Policy renewal alert', 'Michael Torres — Auto policy expires in 14 days', '5h ago', '#F59E0B', 'fa-rotate'],
+          ].map(([title, body, time, color, icon]) => `
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:${color}18;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid ${icon}" style="color:${color};font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">${title}</p>
+              <p style="font-size:12px;color:#64748b;margin:0">${body}</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">${time}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- RIGHT COL -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- TOP GAPS -->
+        <div class="card">
+          <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 14px">Top Coverage Gaps</h2>
+          ${[
+            ['Cyber Liability', 68, '#3B82F6'],
+            ['Flood / Water', 54, '#F59E0B'],
+            ['Income Protection', 41, '#10B981'],
+            ['Life Cover', 38, '#a855f7'],
+            ['Umbrella Liability', 29, '#f97316'],
+          ].map(([label, count, color]) => `
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:12px;color:#475569;font-weight:500">${label}</span>
+              <span style="font-size:12px;color:${color};font-weight:600">${count} clients</span>
+            </div>
+            <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${Math.round(count/68*100)}%;background:${color};border-radius:3px"></div>
+            </div>
+          </div>`).join('')}
+          <a href="/whitelabel/admin/marketplace-admin.html" style="display:block;margin-top:12px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-align:center;font-size:12px;color:#10B981;font-weight:600;text-decoration:none">Manage marketplace products →</a>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="card">
+          <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 14px">Quick Actions</h2>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a href="/whitelabel/admin/marketplace-admin.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+              <div style="width:30px;height:30px;border-radius:6px;background:#ecfdf5;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-plus" style="color:#10B981;font-size:11px"></i></div>
+              <span style="font-size:13px;font-weight:500;color:#0f172a">Add marketplace product</span>
+            </a>
+            <a href="/whitelabel/admin/content.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+              <div style="width:30px;height:30px;border-radius:6px;background:#eff6ff;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-bullhorn" style="color:#3B82F6;font-size:11px"></i></div>
+              <span style="font-size:13px;font-weight:500;color:#0f172a">Push alert to clients</span>
+            </a>
+            <a href="/whitelabel/admin/clients.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+              <div style="width:30px;height:30px;border-radius:6px;background:#fdf2f8;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-users" style="color:#a855f7;font-size:11px"></i></div>
+              <span style="font-size:13px;font-weight:500;color:#0f172a">View all clients</span>
+            </a>
+            <a href="/whitelabel/admin/settings.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+              <div style="width:30px;height:30px;border-radius:6px;background:#fff7ed;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-palette" style="color:#f97316;font-size:11px"></i></div>
+              <span style="font-size:13px;font-weight:500;color:#0f172a">Update branding</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

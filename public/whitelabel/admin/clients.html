@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clients — Shields Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}body{background:#f8fafc;font-family:'Inter',sans-serif}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#475569;text-decoration:none;transition:all .15s}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a}.sidebar-link.active{background:#ecfdf5;color:#10B981;font-weight:600}
+    input,select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;outline:none}input:focus,select:focus{border-color:#10B981}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+    tr:hover td{background:#fafafa}
+  </style>
+</head>
+<body style="display:flex;height:100vh;overflow:hidden">
+<aside style="width:240px;flex-shrink:0;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;height:100vh">
+  <div style="padding:20px 16px;border-bottom:1px solid #e2e8f0"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:#10B981;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">S</div><div><p style="font-weight:700;font-size:14px;color:#0f172a">Shields Insurance</p><p style="font-size:11px;color:#64748b">Broker Admin</p></div></div></div>
+  <nav style="flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px">
+    <a href="/whitelabel/admin/broker-admin.html" class="sidebar-link"><i class="fa-solid fa-chart-line w-4"></i>Overview</a>
+    <a href="/whitelabel/admin/clients.html" class="sidebar-link active"><i class="fa-solid fa-users w-4"></i>Clients</a>
+    <a href="/whitelabel/admin/marketplace-admin.html" class="sidebar-link"><i class="fa-solid fa-store w-4"></i>Marketplace</a>
+    <a href="/whitelabel/admin/content.html" class="sidebar-link"><i class="fa-solid fa-bullhorn w-4"></i>Content & Offers</a>
+    <a href="/whitelabel/admin/settings.html" class="sidebar-link"><i class="fa-solid fa-gear w-4"></i>Settings</a>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e2e8f0">
+      <a href="/whitelabel/dashboard.html" class="sidebar-link"><i class="fa-solid fa-arrow-left w-4"></i>Client Portal</a>
+      <a href="/whitelabel/broker-signin.html" class="sidebar-link" style="color:#ef4444"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</a>
+    </div>
+  </nav>
+</aside>
+<main style="flex:1;overflow-y:auto">
+  <header style="background:white;border-bottom:1px solid #e2e8f0;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
+    <div><h1 style="font-size:18px;font-weight:700;color:#0f172a">Clients</h1><p style="font-size:12px;color:#64748b;margin-top:2px">247 total clients</p></div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <input placeholder="Search clients..." style="width:220px" oninput="filterTable(this.value)">
+      <select onchange="filterGap(this.value)" style="width:auto"><option value="">All gaps</option><option>Cyber</option><option>Flood</option><option>Income</option><option>Life</option></select>
+      <button style="padding:8px 14px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:#475569"><i class="fa-solid fa-download" style="margin-right:6px"></i>Export CSV</button>
+    </div>
+  </header>
+  <div style="padding:24px 28px">
+    <div style="background:white;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse" id="clientTable">
+        <thead>
+          <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
+            <th style="padding:11px 20px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Client</th>
+            <th style="padding:11px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Coverage Score</th>
+            <th style="padding:11px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Policies</th>
+            <th style="padding:11px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Gaps Detected</th>
+            <th style="padding:11px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Last Active</th>
+            <th style="padding:11px 16px;text-align:right;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script>
+const CLIENTS = [
+  { name:'Alex Mercer',    email:'alex@example.com',   score:85, policies:4, gaps:['Cyber','Flood'],      last:'2 mins ago',   avatar:'avatar-4.jpg' },
+  { name:'Sarah Chen',     email:'sarah@example.com',  score:62, policies:3, gaps:['Cyber','Income','Life'], last:'1 hour ago',  avatar:'avatar-5.jpg' },
+  { name:'James O\'Brien', email:'james@example.com',  score:71, policies:2, gaps:['Flood','Liability'],  last:'3 hours ago',  avatar:'avatar-2.jpg' },
+  { name:'Emma Wilson',    email:'emma@example.com',   score:44, policies:1, gaps:['Life','Income','Cyber','Flood'], last:'Today',  avatar:'avatar-1.jpg' },
+  { name:'David Park',     email:'david@example.com',  score:78, policies:3, gaps:['Cyber'],              last:'Yesterday',    avatar:'avatar-3.jpg' },
+  { name:'Lisa Torres',    email:'lisa@example.com',   score:91, policies:5, gaps:[],                     last:'2 days ago',   avatar:'avatar-6.jpg' },
+  { name:'Michael Reed',   email:'michael@example.com',score:55, policies:2, gaps:['Income','Liability'],  last:'3 days ago',  avatar:'avatar-7.jpg' },
+  { name:'Priya Sharma',   email:'priya@example.com',  score:67, policies:2, gaps:['Cyber','Flood'],       last:'1 week ago',  avatar:'avatar-8.jpg' },
+];
+const SC = s => s >= 80 ? '#10B981' : s >= 60 ? '#F59E0B' : '#ef4444';
+const GAP_C = { Cyber:'#3B82F6',Flood:'#06b6d4',Income:'#10B981',Life:'#f97316',Liability:'#8b5cf6' };
+
+function renderClients(list) {
+  document.getElementById('tbody').innerHTML = list.map(c => `
+    <tr style="border-top:1px solid #f1f5f9;cursor:pointer" onclick="window.location.href='/whitelabel/dashboard.html'">
+      <td style="padding:13px 20px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/${c.avatar}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0">
+          <div><p style="font-size:13px;font-weight:600;color:#0f172a;margin:0">${c.name}</p><p style="font-size:11px;color:#64748b;margin:2px 0 0">${c.email}</p></div>
+        </div>
+      </td>
+      <td style="padding:13px 16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="position:relative;width:32px;height:32px">
+            <svg viewBox="0 0 36 36" width="32" height="32" style="transform:rotate(-90deg)">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" stroke-width="3"/>
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${SC(c.score)}" stroke-width="3" stroke-dasharray="${c.score},100"/>
+            </svg>
+            <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#0f172a">${c.score}</span>
+          </div>
+          <span style="font-size:11px;color:${SC(c.score)};font-weight:600">${c.score>=80?'Excellent':c.score>=60?'Fair':'At Risk'}</span>
+        </div>
+      </td>
+      <td style="padding:13px 16px;font-size:13px;color:#0f172a;font-weight:500">${c.policies} ${c.policies===1?'policy':'policies'}</td>
+      <td style="padding:13px 16px">
+        ${c.gaps.length === 0
+          ? '<span style="font-size:12px;color:#10B981;font-weight:500">✓ No gaps</span>'
+          : c.gaps.map(g => `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:${GAP_C[g]||'#64748b'}18;color:${GAP_C[g]||'#64748b'};margin:2px">${g}</span>`).join('')
+        }
+      </td>
+      <td style="padding:13px 16px;font-size:12px;color:#64748b">${c.last}</td>
+      <td style="padding:13px 16px;text-align:right">
+        <button style="padding:5px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:white;color:#475569;margin-right:4px" onclick="event.stopPropagation();window.location.href='/whitelabel/dashboard.html'">View</button>
+        <button style="padding:5px 12px;border:1px solid #dbeafe;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:#eff6ff;color:#3B82F6" onclick="event.stopPropagation()">Send Alert</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterTable(q) {
+  const filtered = CLIENTS.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.email.toLowerCase().includes(q.toLowerCase()));
+  renderClients(filtered);
+}
+function filterGap(g) {
+  const filtered = g ? CLIENTS.filter(c => c.gaps.includes(g)) : CLIENTS;
+  renderClients(filtered);
+}
+renderClients(CLIENTS);
+</script>
+</body>
+</html>
