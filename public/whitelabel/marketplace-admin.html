@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace Manager — Shields Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#f8fafc;font-family:'Inter',sans-serif}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#475569;text-decoration:none;transition:all .15s}
+    .sidebar-link:hover{background:#f1f5f9;color:#0f172a}
+    .sidebar-link.active{background:#ecfdf5;color:#10B981;font-weight:600}
+    .card{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center}
+    .modal{background:white;border-radius:16px;padding:28px;width:90%;max-width:560px;max-height:90vh;overflow-y:auto}
+    input,select,textarea{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;color:#0f172a;background:white;outline:none;transition:border .2s}
+    input:focus,select:focus,textarea:focus{border-color:#10B981}
+    label{font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:5px}
+    .toggle{position:relative;display:inline-block;width:40px;height:22px}
+    .toggle input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#e2e8f0;border-radius:22px;transition:.3s}
+    .slider:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+    input:checked+.slider{background:#10B981}
+    input:checked+.slider:before{transform:translateX(18px)}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+  </style>
+</head>
+<body style="display:flex;height:100vh;overflow:hidden">
+
+<!-- SIDEBAR -->
+<aside style="width:240px;flex-shrink:0;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;height:100vh">
+  <div style="padding:20px 16px;border-bottom:1px solid #e2e8f0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:8px;background:#10B981;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">S</div>
+      <div><p style="font-weight:700;font-size:14px;color:#0f172a">Shields Insurance</p><p style="font-size:11px;color:#64748b">Broker Admin</p></div>
+    </div>
+  </div>
+  <nav style="flex:1;padding:12px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">
+    <a href="/whitelabel/admin/broker-admin.html" class="sidebar-link"><i class="fa-solid fa-chart-line w-4"></i>Overview</a>
+    <a href="/whitelabel/admin/clients.html" class="sidebar-link"><i class="fa-solid fa-users w-4"></i>Clients</a>
+    <a href="/whitelabel/admin/marketplace-admin.html" class="sidebar-link active"><i class="fa-solid fa-store w-4"></i>Marketplace</a>
+    <a href="/whitelabel/admin/content.html" class="sidebar-link"><i class="fa-solid fa-bullhorn w-4"></i>Content & Offers</a>
+    <a href="/whitelabel/admin/settings.html" class="sidebar-link"><i class="fa-solid fa-gear w-4"></i>Settings</a>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e2e8f0">
+      <a href="/whitelabel/dashboard.html" class="sidebar-link"><i class="fa-solid fa-arrow-left w-4"></i>Client Portal</a>
+      <a href="/whitelabel/broker-signin.html" class="sidebar-link" style="color:#ef4444"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</a>
+    </div>
+  </nav>
+</aside>
+
+<main style="flex:1;overflow-y:auto">
+  <header style="background:white;border-bottom:1px solid #e2e8f0;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
+    <div><h1 style="font-size:18px;font-weight:700;color:#0f172a">Marketplace Manager</h1><p style="font-size:12px;color:#64748b;margin-top:2px">Manage products shown to clients based on their coverage gaps</p></div>
+    <button onclick="showModal()" style="display:flex;align-items:center;gap:8px;padding:9px 18px;background:#10B981;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+      <i class="fa-solid fa-plus"></i> Add Product
+    </button>
+  </header>
+
+  <div style="padding:24px 28px;display:flex;flex-direction:column;gap:20px">
+
+    <!-- STATS ROW -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+        <p style="font-size:11px;color:#64748b;font-weight:500;margin-bottom:6px">Active Products</p>
+        <p style="font-size:26px;font-weight:800;color:#0f172a">5</p>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+        <p style="font-size:11px;color:#64748b;font-weight:500;margin-bottom:6px">Featured</p>
+        <p style="font-size:26px;font-weight:800;color:#0f172a">2</p>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+        <p style="font-size:11px;color:#64748b;font-weight:500;margin-bottom:6px">Clicks This Month</p>
+        <p style="font-size:26px;font-weight:800;color:#10B981">218</p>
+      </div>
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+        <p style="font-size:11px;color:#64748b;font-weight:500;margin-bottom:6px">Quote Requests</p>
+        <p style="font-size:26px;font-weight:800;color:#3B82F6">34</p>
+      </div>
+    </div>
+
+    <!-- PRODUCTS TABLE -->
+    <div class="card" style="padding:0">
+      <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+        <h2 style="font-size:14px;font-weight:700;color:#0f172a">All Products</h2>
+        <div style="display:flex;gap:8px">
+          <select style="width:auto;padding:6px 10px;font-size:12px;border-radius:6px">
+            <option>All gaps</option>
+            <option>Cyber</option><option>Flood</option><option>Income</option><option>Liability</option><option>Life</option>
+          </select>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:#f8fafc">
+            <th style="padding:10px 20px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Product</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Gap Targets</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Premium</th>
+            <th style="padding:10px 16px;text-align:center;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Featured</th>
+            <th style="padding:10px 16px;text-align:center;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Status</th>
+            <th style="padding:10px 16px;text-align:right;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<!-- ADD PRODUCT MODAL -->
+<div id="modal" class="modal-bg" style="display:none" onclick="if(event.target===this)hideModal()">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 style="font-size:17px;font-weight:700;color:#0f172a">Add Marketplace Product</h2>
+      <button onclick="hideModal()" style="background:none;border:none;color:#64748b;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <form onsubmit="addProduct(event)" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label>Product Name *</label><input id="f_name" placeholder="e.g. Cyber Shield Pro" required></div>
+        <div><label>Insurer Name *</label><input id="f_insurer" placeholder="e.g. AXA, Aviva" required></div>
+      </div>
+      <div>
+        <label>Coverage Type / Gap Target *</label>
+        <select id="f_type">
+          <option>Cyber Liability</option><option>Flood / Water</option><option>Income Protection</option>
+          <option>Umbrella Liability</option><option>Life Cover</option><option>Health</option><option>Property</option><option>Other</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label>Premium From (£/mo)</label><input id="f_from" type="number" placeholder="18"></div>
+        <div><label>Premium To (£/mo)</label><input id="f_to" type="number" placeholder="45"></div>
+      </div>
+      <div><label>Plain English Description *</label><textarea id="f_desc" rows="3" placeholder="What does this cover? Who is it for?" required style="resize:none"></textarea></div>
+      <div><label>Quote URL or Contact Method</label><input id="f_url" placeholder="https://... or tel:+44800..."></div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <label style="display:flex;align-items:center;gap:8px;margin:0;cursor:pointer">
+          <label class="toggle"><input id="f_featured" type="checkbox"><span class="slider"></span></label>
+          <span style="font-size:13px;color:#0f172a;font-weight:500">Featured (shows first)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin:0;cursor:pointer">
+          <label class="toggle"><input id="f_active" type="checkbox" checked><span class="slider"></span></label>
+          <span style="font-size:13px;color:#0f172a;font-weight:500">Active</span>
+        </label>
+      </div>
+      <div><label>Promo Badge (optional)</label><input id="f_promo" placeholder="e.g. Limited Time · Save 20%"></div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button type="button" onclick="hideModal()" style="flex:1;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:white;font-family:inherit;color:#475569">Cancel</button>
+        <button type="submit" style="flex:2;padding:11px;background:#10B981;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const COLORS = { 'Cyber Liability':'#3B82F6','Flood / Water':'#06b6d4','Income Protection':'#10B981','Umbrella Liability':'#8b5cf6','Life Cover':'#f97316','Health':'#ec4899','Property':'#64748b','Other':'#94a3b8' };
+
+let products = [
+  { id:1, name:'Cyber Shield Pro',    insurer:'AXA',   type:'Cyber Liability',    from:20, to:35, desc:'Covers data breaches, ransomware and unauthorised system access. Ideal for businesses with digital exposure.', url:'https://shieldsinsurance.com/cyber', featured:true,  active:true,  promo:'Most Popular', clicks:87, quotes:12 },
+  { id:2, name:'FloodGuard Home',     insurer:'Aviva', type:'Flood / Water',       from:15, to:22, desc:'Fills the flood and surface water gap left by standard home policies. Covers contents and structural damage.', url:'https://shieldsinsurance.com/flood', featured:true,  active:true,  promo:'', clicks:61, quotes:9 },
+  { id:3, name:'IncomeFirst',         insurer:'LV=',   type:'Income Protection',   from:30, to:45, desc:'Replaces up to 70% of your salary if you\'re unable to work due to illness or injury.', url:'https://shieldsinsurance.com/income', featured:false, active:true,  promo:'', clicks:42, quotes:7 },
+  { id:4, name:'UmbrellaCover Plus',  insurer:'RSA',   type:'Umbrella Liability',  from:18, to:28, desc:'Extends liability cover beyond standard home and auto limits. Protects against large third-party claims.', url:'https://shieldsinsurance.com/umbrella', featured:false, active:true, promo:'', clicks:18, quotes:4 },
+  { id:5, name:'Life Secure 20',      insurer:'Zurich',type:'Life Cover',           from:38, to:55, desc:'20-year term life policy. Pays a lump sum to your family if you pass away during the policy term.', url:'https://shieldsinsurance.com/life', featured:false, active:true,  promo:'Limited Time', clicks:10, quotes:2 },
+];
+
+function renderTable() {
+  const tb = document.getElementById('productTable');
+  tb.innerHTML = products.map(p => `
+    <tr style="border-top:1px solid #f1f5f9;transition:background .15s" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='white'">
+      <td style="padding:14px 20px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:8px;background:${COLORS[p.type] || '#64748b'}18;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fa-solid fa-shield-halved" style="color:${COLORS[p.type] || '#64748b'};font-size:13px"></i>
+          </div>
+          <div>
+            <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0">${p.name} ${p.promo ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:${COLORS[p.type]}18;color:${COLORS[p.type]};font-weight:700;margin-left:4px">${p.promo}</span>` : ''}</p>
+            <p style="font-size:11px;color:#64748b;margin:2px 0 0">${p.insurer} · ${p.clicks} clicks · ${p.quotes} quotes</p>
+          </div>
+        </div>
+      </td>
+      <td style="padding:14px 16px"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${COLORS[p.type] || '#64748b'}18;color:${COLORS[p.type] || '#64748b'}">${p.type}</span></td>
+      <td style="padding:14px 16px;font-size:13px;color:#0f172a;font-weight:500">£${p.from}–£${p.to}/mo</td>
+      <td style="padding:14px 16px;text-align:center">${p.featured ? '<i class="fa-solid fa-star" style="color:#F59E0B"></i>' : '<i class="fa-regular fa-star" style="color:#cbd5e1"></i>'}</td>
+      <td style="padding:14px 16px;text-align:center"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${p.active ? '#ecfdf5' : '#f1f5f9'};color:${p.active ? '#10B981' : '#64748b'}">${p.active ? 'Active' : 'Draft'}</span></td>
+      <td style="padding:14px 16px;text-align:right">
+        <button onclick="toggleFeatured(${p.id})" style="padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:white;color:#475569;margin-right:4px">${p.featured ? 'Unfeature' : 'Feature'}</button>
+        <button onclick="toggleActive(${p.id})" style="padding:5px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:white;color:#475569;margin-right:4px">${p.active ? 'Deactivate' : 'Activate'}</button>
+        <button onclick="deleteProduct(${p.id})" style="padding:5px 10px;border:1px solid #fecaca;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;background:#fff5f5;color:#ef4444">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function showModal() { document.getElementById('modal').style.display='flex'; }
+function hideModal() { document.getElementById('modal').style.display='none'; }
+
+function addProduct(e) {
+  e.preventDefault();
+  const p = {
+    id: Date.now(),
+    name:     document.getElementById('f_name').value,
+    insurer:  document.getElementById('f_insurer').value,
+    type:     document.getElementById('f_type').value,
+    from:     parseInt(document.getElementById('f_from').value)||0,
+    to:       parseInt(document.getElementById('f_to').value)||0,
+    desc:     document.getElementById('f_desc').value,
+    url:      document.getElementById('f_url').value,
+    featured: document.getElementById('f_featured').checked,
+    active:   document.getElementById('f_active').checked,
+    promo:    document.getElementById('f_promo').value,
+    clicks:0, quotes:0
+  };
+  products.unshift(p);
+  renderTable();
+  hideModal();
+  e.target.reset();
+}
+
+function toggleFeatured(id) { products = products.map(p => p.id===id ? {...p, featured:!p.featured} : p); renderTable(); }
+function toggleActive(id) { products = products.map(p => p.id===id ? {...p, active:!p.active} : p); renderTable(); }
+function deleteProduct(id) { if(confirm('Delete this product?')) { products = products.filter(p => p.id!==id); renderTable(); } }
+
+renderTable();
+</script>
+</body>
+</html>
