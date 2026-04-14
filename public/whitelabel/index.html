@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPoli.ai — White Label Portal</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#f8fafc;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --card:#fff;
+      --green:#10B981;
+      --green-light:#ecfdf5;
+      --green-border:#a7f3d0;
+      --blue:#3b82f6;
+      --blue-light:#eff6ff;
+      --blue-border:#bfdbfe;
+      --purple:#8b5cf6;
+      --purple-light:#f5f3ff;
+      --purple-border:#ddd6fe;
+    }
+    body{
+      min-height:100vh;
+      font-family:'DM Sans',-apple-system,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Top bar */
+    .topbar{
+      padding:16px 32px;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .topbar-logo{
+      display:flex;align-items:center;gap:10px;
+      font-weight:700;font-size:15px;color:var(--text);
+      text-decoration:none;
+    }
+    .topbar-logo .icon{
+      width:32px;height:32px;border-radius:8px;
+      background:var(--green);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:14px;
+    }
+    .topbar-right{
+      display:flex;align-items:center;gap:16px;
+    }
+    .topbar-right a{
+      color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;
+      transition:color .2s;
+    }
+    .topbar-right a:hover{color:var(--text);}
+    .badge-demo{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;
+      color:var(--green);background:var(--green-light);
+      border:1px solid var(--green-border);
+    }
+    .badge-demo .dot{
+      width:5px;height:5px;background:var(--green);border-radius:50%;
+      animation:pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.3)}
+      50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}
+    }
+
+    /* Main content */
+    .page{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:60px 24px;
+    }
+    .page-header{
+      text-align:center;
+      margin-bottom:40px;
+    }
+    .page-header h1{
+      font-size:clamp(1.6rem,3.5vw,2.2rem);
+      font-weight:700;
+      letter-spacing:-.03em;
+      margin-bottom:8px;
+    }
+    .page-header p{
+      color:var(--muted);
+      font-size:clamp(.88rem,1.5vw,1rem);
+      max-width:460px;
+      line-height:1.55;
+    }
+
+    /* Cards */
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:20px;
+      width:min(720px,100%);
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:32px 28px;
+      text-decoration:none;
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      transition:transform .2s,box-shadow .2s,border-color .2s;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 32px rgba(0,0,0,.08);
+      border-color:#cbd5e1;
+    }
+    .card-icon{
+      width:52px;height:52px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;flex-shrink:0;
+    }
+    .card-icon.broker{
+      background:var(--green-light);
+      border:1px solid var(--green-border);
+      color:var(--green);
+    }
+    .card-icon.admin{
+      background:var(--blue-light);
+      border:1px solid var(--blue-border);
+      color:var(--blue);
+    }
+    .card h2{
+      font-size:1.05rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;
+    }
+    .card p{
+      color:var(--muted);font-size:.85rem;line-height:1.55;
+    }
+    .card-arrow{
+      margin-top:auto;
+      display:flex;align-items:center;gap:6px;
+      font-size:.82rem;font-weight:600;
+      color:var(--green);
+      opacity:.7;
+      transition:opacity .2s,gap .2s;
+    }
+    .card:nth-child(2) .card-arrow{color:var(--blue);}
+    .card:hover .card-arrow{opacity:1;gap:10px;}
+
+    .card-tag{
+      position:absolute;top:16px;right:16px;
+      padding:3px 10px;border-radius:100px;
+      font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+      background:var(--green-light);color:var(--green);border:1px solid var(--green-border);
+    }
+
+    /* Separator */
+    .or-row{
+      display:flex;align-items:center;gap:16px;
+      width:min(720px,100%);
+      margin:28px 0;
+      color:var(--muted);font-size:.82rem;font-weight:500;
+    }
+    .or-row::before,.or-row::after{
+      content:'';flex:1;height:1px;background:var(--border);
+    }
+
+    /* Quick links row */
+    .quick-links{
+      display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+    }
+    .quick-link{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 16px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:.82rem;font-weight:500;
+      color:var(--muted);
+      text-decoration:none;
+      transition:all .2s;
+    }
+    .quick-link:hover{
+      color:var(--text);border-color:#cbd5e1;background:#f1f5f9;
+    }
+    .quick-link i{font-size:12px;width:14px;text-align:center;}
+
+    /* Footer */
+    .footer{
+      text-align:center;padding:24px;
+      font-size:.78rem;color:var(--muted);
+    }
+    .footer a{color:var(--muted);text-decoration:none;}
+    .footer a:hover{color:var(--text);}
+
+    /* Back link */
+    .back-link{
+      display:inline-flex;align-items:center;gap:6px;
+      color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;
+      margin-bottom:24px;transition:color .2s;
+    }
+    .back-link:hover{color:var(--text);}
+
+    @media(max-width:600px){
+      .topbar{padding:12px 16px;}
+      .page{padding:40px 16px;}
+      .cards{grid-template-columns:1fr;}
+      .card{padding:24px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topbar">
+    <a href="/" class="topbar-logo">
+      <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+      MyPoli.ai
+    </a>
+    <div class="topbar-right">
+      <div class="badge-demo"><span class="dot"></span> White Label Demo</div>
+      <a href="/directory">Directory</a>
+      <a href="mailto:shane@mypoli.ai">Contact</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <a href="/directory" class="back-link">
+      <i class="fa-solid fa-arrow-left" style="font-size:12px"></i>
+      Back to Directory
+    </a>
+
+    <div class="page-header">
+      <h1>White Label Portal</h1>
+      <p>Explore the broker client experience or manage the platform from the admin panel.</p>
+    </div>
+
+    <div class="cards">
+
+      <!-- Broker Experience -->
+      <a class="card" href="/whitelabel/broker-welcome.html">
+        <span class="card-tag">Live Demo</span>
+        <div class="card-icon broker"><i class="fa-solid fa-users"></i></div>
+        <div>
+          <h2>Broker Experience</h2>
+          <p>The client-facing portal — onboarding, sign in, policy dashboard, coverage analysis, marketplace, and settings. See what your clients see.</p>
+        </div>
+        <div class="card-arrow">
+          Launch broker portal
+          <i class="fa-solid fa-arrow-right" style="font-size:11px"></i>
+        </div>
+      </a>
+
+      <!-- Broker Admin -->
+      <a class="card" href="/whitelabel/admin/broker-admin.html">
+        <span class="card-tag" style="background:var(--blue-light);color:var(--blue);border-color:var(--blue-border);">Live Demo</span>
+        <div class="card-icon admin"><i class="fa-solid fa-sliders"></i></div>
+        <div>
+          <h2>Broker Admin Panel</h2>
+          <p>The back-office view — manage clients, configure marketplace products, monitor analytics, and control platform settings.</p>
+        </div>
+        <div class="card-arrow">
+          Launch admin panel
+          <i class="fa-solid fa-arrow-right" style="font-size:11px"></i>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="or-row">Quick Links</div>
+
+    <div class="quick-links">
+      <a href="/whitelabel/broker-signin.html" class="quick-link"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+      <a href="/whitelabel/dashboard.html" class="quick-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="/whitelabel/marketplace.html" class="quick-link"><i class="fa-solid fa-store"></i> Marketplace</a>
+      <a href="/whitelabel/broker-settings.html" class="quick-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      <a href="/whitelabel/admin/clients.html" class="quick-link"><i class="fa-solid fa-users"></i> Clients</a>
+      <a href="/whitelabel/admin/marketplace-admin.html" class="quick-link"><i class="fa-solid fa-tags"></i> Marketplace Admin</a>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 MyPoli.ai &nbsp;·&nbsp; <a href="mailto:shane@mypoli.ai">shane@mypoli.ai</a></p>
+  </div>
+
+</body>
+</html>

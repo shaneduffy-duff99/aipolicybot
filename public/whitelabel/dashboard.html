@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Shields Insurance Group</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        const BROKER = {
+            name: "Shields Insurance Group",
+            primaryColor: "#10B981",
+            accentColor: "#3B82F6",
+            phone: "+44 800 123 4567",
+            email: "hello@shieldsinsurance.com"
+        };
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        broker: {
+                            primary: BROKER.primaryColor,
+                            accent: BROKER.accentColor,
+                        },
+                        slate: {
+                            50: '#F8FAFC',
+                            100: '#F1F5F9',
+                            200: '#E2E8F0',
+                            300: '#CBD5E1',
+                            400: '#94A3B8',
+                            500: '#64748B',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1E293B',
+                            900: '#0F172A',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F8FAFC;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased h-screen flex overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col h-full flex-shrink-0 lg:block hidden">
+        <!-- Brand -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-100">
+            <div class="w-8 h-8 rounded bg-broker-primary flex items-center justify-center text-white font-bold mr-3">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h1 class="font-semibold text-slate-900 text-sm leading-tight">Shields Insurance</h1>
+                <p class="text-xs text-slate-500">Powered by MyPoli.ai</p>
+            </div>
+        </div>
+
+        <!-- Main Nav -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <a href="/whitelabel/dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-primary-50 text-primary-700 font-semibold"><i class="fa-solid fa-chart-pie w-4"></i><span>Dashboard</span></a>
+            <a href="/whitelabel/my-policies.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-file-contract w-4"></i><span>My Policies</span></a>
+            <a href="/whitelabel/coverage-score.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-bullseye w-4"></i><span>Coverage Score</span></a>
+            <a href="/whitelabel/marketplace.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-store w-4"></i><span>Marketplace</span></a>
+            <a href="/whitelabel/next-of-kin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-users w-4"></i><span>Next of Kin</span></a>
+            <div class="mt-4 pt-4 border-t border-slate-200">
+            <a href="/whitelabel/admin/broker-admin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-gear w-4"></i><span>Broker Admin</span></a>
+            <a href="/whitelabel/broker-signin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-red-50 hover:text-red-600"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i><span>Sign Out</span></a>
+            </div>
+        </nav>
+
+        <!-- Bottom Actions -->
+        <div class="p-4 border-t border-slate-100 space-y-2">
+            <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-gear w-5 text-slate-400"></i>
+                Settings
+            </a>
+            <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-circle-question w-5 text-slate-400"></i>
+                Help Center
+            </a>
+            
+            <div class="mt-4 pt-4 border-t border-slate-100">
+                <div class="flex items-center px-3">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Alex Mercer" class="w-8 h-8 rounded-full border border-slate-200">
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-slate-900">Alex Mercer</p>
+                        <p class="text-xs text-slate-500">Score: 85 <span class="text-broker-primary font-medium ml-1">Good</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <aside class="w-64 bg-white h-full flex flex-col">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded bg-broker-primary flex items-center justify-center text-white font-bold mr-3">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-semibold text-slate-900 text-sm leading-tight">Shields Insurance</h1>
+                        <p class="text-xs text-slate-500">Powered by MyPoli.ai</p>
+                    </div>
+                </div>
+                <button onclick="toggleMobileMenu()" class="p-2 text-slate-400">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <a href="/whitelabel/dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-primary-50 text-primary-700 font-semibold"><i class="fa-solid fa-chart-pie w-4"></i><span>Dashboard</span></a>
+            <a href="/whitelabel/my-policies.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-file-contract w-4"></i><span>My Policies</span></a>
+            <a href="/whitelabel/coverage-score.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-bullseye w-4"></i><span>Coverage Score</span></a>
+            <a href="/whitelabel/marketplace.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-store w-4"></i><span>Marketplace</span></a>
+            <a href="/whitelabel/next-of-kin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-users w-4"></i><span>Next of Kin</span></a>
+            <div class="mt-4 pt-4 border-t border-slate-200">
+            <a href="/whitelabel/admin/broker-admin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-slate-100 hover:text-slate-900"><i class="fa-solid fa-gear w-4"></i><span>Broker Admin</span></a>
+            <a href="/whitelabel/broker-signin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 hover:bg-red-50 hover:text-red-600"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i><span>Sign Out</span></a>
+            </div>
+            </nav>
+        </aside>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        <!-- Header -->
+        <header id="top-header" class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 flex-shrink-0">
+            <div class="flex items-center">
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-400 mr-2">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h2 class="text-xl font-semibold text-slate-800">Dashboard</h2>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden md:block">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-broker-primary focus:border-transparent w-64">
+                </div>
+                <button class="w-10 h-10 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors relative">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-[1440px] mx-auto space-y-6">
+
+                <!-- Welcome Section -->
+                <section id="welcome-section" class="bg-gradient-to-r from-broker-primary to-broker-accent rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div class="relative z-10">
+                        <h1 class="text-2xl lg:text-3xl font-bold mb-2">Good morning, Alex!</h1>
+                        <p class="text-lg opacity-90 mb-6">Your coverage score has improved by 5 points since last month.</p>
+                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button onclick="window.location.href='/whitelabel/marketplace.html'" class="px-6 py-3 bg-white text-broker-primary rounded-lg font-medium hover:bg-opacity-90 transition-colors">
+                                <i class="fa-solid fa-store mr-2"></i>
+                                Browse Marketplace
+                            </button>
+                            <button class="px-6 py-3 border border-white border-opacity-30 rounded-lg font-medium hover:bg-white hover:bg-opacity-10 transition-colors">
+                                <i class="fa-solid fa-upload mr-2"></i>
+                                Upload Policy
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Coverage Score Widget -->
+                <section id="coverage-score-widget" class="bg-white rounded-xl shadow-card border border-slate-200 p-6">
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-2">Coverage Score</h3>
+                            <p class="text-slate-600">Your overall protection rating</p>
+                        </div>
+                        <a href="/whitelabel/coverage-score.html" class="mt-4 lg:mt-0 text-broker-primary hover:text-broker-primary/80 text-sm font-medium">
+                            View full analysis <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 flex items-center justify-center">
+                            <div class="relative w-32 h-32">
+                                <div class="absolute inset-0 rounded-full border-8 border-slate-100"></div>
+                                <div class="absolute inset-0 rounded-full border-8 border-broker-primary" style="clip-path: polygon(0 0, 100% 0, 100% 85%, 0 85%);"></div>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                    <span class="text-3xl font-bold text-slate-900">85</span>
+                                    <span class="text-sm text-slate-500">Good</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Life Insurance</span>
+                                <span class="text-sm font-medium text-broker-primary">Covered</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Property Insurance</span>
+                                <span class="text-sm font-medium text-broker-primary">Covered</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Flood Protection</span>
+                                <span class="text-sm font-medium text-red-600">Gap Detected</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Cyber Liability</span>
+                                <span class="text-sm font-medium text-red-600">Gap Detected</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Income Protection</span>
+                                <span class="text-sm font-medium text-amber-600">Partial</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Active Alerts -->
+                <section id="active-alerts" class="bg-red-50 border border-red-200 rounded-xl p-6">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 mt-1">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-red-900 mb-2">Critical Coverage Gaps Detected</h4>
+                            <p class="text-red-700 text-sm mb-4">You have 2 critical gaps in your coverage that could expose you to significant financial risk.</p>
+                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                                <button onclick="window.location.href='/whitelabel/marketplace.html'" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
+                                    See Recommended Products
+                                </button>
+                                <button onclick="window.location.href='/whitelabel/coverage-score.html'" class="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                                    View Analysis
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Policy Summary Cards -->
+                <section id="policy-summary">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-semibold text-slate-900">Your Policies</h3>
+                        <a href="/whitelabel/my-policies.html" class="text-broker-primary hover:text-broker-primary/80 text-sm font-medium">
+                            View all policies <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Policy Card 1 -->
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                                    <i class="fa-solid fa-heart-pulse"></i>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Active</span>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-1">Life Insurance</h5>
+                            <p class="text-sm text-slate-500 mb-3">Aviva • Policy #LI-2024-001</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Coverage</span>
+                                    <span class="font-medium">£500,000</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Premium</span>
+                                    <span class="font-medium">£45/month</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Renewal</span>
+                                    <span class="font-medium">Mar 2025</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Policy Card 2 -->
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                                    <i class="fa-solid fa-house"></i>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Active</span>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-1">Home Insurance</h5>
+                            <p class="text-sm text-slate-500 mb-3">Direct Line • Policy #HI-2024-002</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Coverage</span>
+                                    <span class="font-medium">£350,000</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Premium</span>
+                                    <span class="font-medium">£28/month</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Renewal</span>
+                                    <span class="font-medium">Jun 2024</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Policy Card 3 -->
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100">
+                                    <i class="fa-solid fa-car"></i>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Active</span>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-1">Car Insurance</h5>
+                            <p class="text-sm text-slate-500 mb-3">Admiral • Policy #CI-2024-003</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Coverage</span>
+                                    <span class="font-medium">Comprehensive</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Premium</span>
+                                    <span class="font-medium">£52/month</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Renewal</span>
+                                    <span class="font-medium">Dec 2024</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section id="quick-actions">
+                    <h3 class="text-xl font-semibold text-slate-900 mb-6">Quick Actions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <button class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6 text-left group">
+                            <div class="w-12 h-12 rounded-lg bg-broker-primary bg-opacity-10 text-broker-primary flex items-center justify-center mb-4 group-hover:bg-opacity-20 transition-colors">
+                                <i class="fa-solid fa-upload text-xl"></i>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-2">Upload Policy</h5>
+                            <p class="text-sm text-slate-600">Add a new policy document for AI analysis</p>
+                        </button>
+
+                        <button class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6 text-left group">
+                            <div class="w-12 h-12 rounded-lg bg-broker-accent bg-opacity-10 text-broker-accent flex items-center justify-center mb-4 group-hover:bg-opacity-20 transition-colors">
+                                <i class="fa-solid fa-robot text-xl"></i>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-2">Ask AI Assistant</h5>
+                            <p class="text-sm text-slate-600">Get instant answers about your coverage</p>
+                        </button>
+
+                        <button onclick="window.location.href='/whitelabel/marketplace.html'" class="bg-white rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-200 p-6 text-left group">
+                            <div class="w-12 h-12 rounded-lg bg-emerald-500 bg-opacity-10 text-emerald-600 flex items-center justify-center mb-4 group-hover:bg-opacity-20 transition-colors">
+                                <i class="fa-solid fa-store text-xl"></i>
+                            </div>
+                            <h5 class="font-semibold text-slate-900 mb-2">View Marketplace</h5>
+                            <p class="text-sm text-slate-600">Browse products to fill your coverage gaps</p>
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu when clicking outside
+        document.getElementById('mobile-menu').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleMobileMenu();
+            }
+        });
+    </script>
+
+</body>
+</html>
