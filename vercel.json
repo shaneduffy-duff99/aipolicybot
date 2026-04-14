@@ -1,11 +1,4 @@
 {
-  "version": 2,
-  "routes": [
-    { "src": "/api/chat", "dest": "/api/chat.js" },
-    { "src": "/dashboard", "dest": "/public/dashboard.html" },
-    { "src": "/my-policies", "dest": "/public/my-policies.html" },
-    { "src": "/coverage-score", "dest": "/public/coverage-score.html" },
-    { "src": "/next-of-kin", "dest": "/public/next-of-kin.html" },
-    { "src": "/(.*)", "dest": "/public/$1" }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
