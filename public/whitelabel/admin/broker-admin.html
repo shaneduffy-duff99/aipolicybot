@@ -114,25 +114,83 @@
           <a href="/whitelabel/admin/clients.html" style="font-size:12px;color:#10B981;font-weight:500;text-decoration:none">View all clients →</a>
         </div>
         <div style="display:flex;flex-direction:column;gap:0">
-          ${[
-            ['New client signed up', 'Emma Wilson uploaded 2 policies', '2m ago', '#10B981', 'fa-user-plus'],
-            ['Quote requested', 'Alex Mercer requested a quote for Cyber Shield Pro', '14m ago', '#3B82F6', 'fa-handshake'],
-            ['Policy analysed', 'Sarah Chen — Term Life 20yr analysis complete. Score: 45/100', '32m ago', '#F59E0B', 'fa-robot'],
-            ['Coverage gap detected', 'James O\'Brien — Flood cover gap identified. Marketplace alert sent.', '1h ago', '#f97316', 'fa-triangle-exclamation'],
-            ['New client signed up', 'David Park uploaded 1 policy', '2h ago', '#10B981', 'fa-user-plus'],
-            ['Quote requested', 'Sarah Chen requested income protection quote', '3h ago', '#3B82F6', 'fa-handshake'],
-            ['Policy renewal alert', 'Michael Torres — Auto policy expires in 14 days', '5h ago', '#F59E0B', 'fa-rotate'],
-          ].map(([title, body, time, color, icon]) => `
+          <!-- Activity item 1 -->
           <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
-            <div style="width:34px;height:34px;border-radius:50%;background:${color}18;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <i class="fa-solid ${icon}" style="color:${color};font-size:12px"></i>
+            <div style="width:34px;height:34px;border-radius:50%;background:#10B98118;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-user-plus" style="color:#10B981;font-size:12px"></i>
             </div>
             <div style="flex:1">
-              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">${title}</p>
-              <p style="font-size:12px;color:#64748b;margin:0">${body}</p>
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">New client signed up</p>
+              <p style="font-size:12px;color:#64748b;margin:0">Emma Wilson uploaded 2 policies</p>
             </div>
-            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">${time}</span>
-          </div>`).join('')}
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">2m ago</span>
+          </div>
+          <!-- Activity item 2 -->
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:#3B82F618;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-handshake" style="color:#3B82F6;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">Quote requested</p>
+              <p style="font-size:12px;color:#64748b;margin:0">Alex Mercer requested a quote for Cyber Shield Pro</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">14m ago</span>
+          </div>
+          <!-- Activity item 3 -->
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:#F59E0B18;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-robot" style="color:#F59E0B;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">Policy analysed</p>
+              <p style="font-size:12px;color:#64748b;margin:0">Sarah Chen — Term Life 20yr analysis complete. Score: 45/100</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">32m ago</span>
+          </div>
+          <!-- Activity item 4 -->
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:#f9731618;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-triangle-exclamation" style="color:#f97316;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">Coverage gap detected</p>
+              <p style="font-size:12px;color:#64748b;margin:0">James O'Brien — Flood cover gap identified. Marketplace alert sent.</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">1h ago</span>
+          </div>
+          <!-- Activity item 5 -->
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:#10B98118;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-user-plus" style="color:#10B981;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">New client signed up</p>
+              <p style="font-size:12px;color:#64748b;margin:0">David Park uploaded 1 policy</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">2h ago</span>
+          </div>
+          <!-- Activity item 6 -->
+          <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+            <div style="width:34px;height:34px;border-radius:50%;background:#3B82F618;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-handshake" style="color:#3B82F6;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">Quote requested</p>
+              <p style="font-size:12px;color:#64748b;margin:0">Sarah Chen requested income protection quote</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">3h ago</span>
+          </div>
+          <!-- Activity item 7 -->
+          <div style="display:flex;gap:12px;padding:12px 0">
+            <div style="width:34px;height:34px;border-radius:50%;background:#F59E0B18;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fa-solid fa-rotate" style="color:#F59E0B;font-size:12px"></i>
+            </div>
+            <div style="flex:1">
+              <p style="font-size:13px;font-weight:600;color:#0f172a;margin:0 0 2px">Policy renewal alert</p>
+              <p style="font-size:12px;color:#64748b;margin:0">Michael Torres — Auto policy expires in 14 days</p>
+            </div>
+            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;padding-top:2px">5h ago</span>
+          </div>
         </div>
       </div>
 
@@ -142,22 +200,56 @@
         <!-- TOP GAPS -->
         <div class="card">
           <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 14px">Top Coverage Gaps</h2>
-          ${[
-            ['Cyber Liability', 68, '#3B82F6'],
-            ['Flood / Water', 54, '#F59E0B'],
-            ['Income Protection', 41, '#10B981'],
-            ['Life Cover', 38, '#a855f7'],
-            ['Umbrella Liability', 29, '#f97316'],
-          ].map(([label, count, color]) => `
+          <!-- Gap 1: Cyber Liability -->
           <div style="margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-              <span style="font-size:12px;color:#475569;font-weight:500">${label}</span>
-              <span style="font-size:12px;color:${color};font-weight:600">${count} clients</span>
+              <span style="font-size:12px;color:#475569;font-weight:500">Cyber Liability</span>
+              <span style="font-size:12px;color:#3B82F6;font-weight:600">68 clients</span>
             </div>
             <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
-              <div style="height:100%;width:${Math.round(count/68*100)}%;background:${color};border-radius:3px"></div>
+              <div style="height:100%;width:100%;background:#3B82F6;border-radius:3px"></div>
             </div>
-          </div>`).join('')}
+          </div>
+          <!-- Gap 2: Flood / Water -->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:12px;color:#475569;font-weight:500">Flood / Water</span>
+              <span style="font-size:12px;color:#F59E0B;font-weight:600">54 clients</span>
+            </div>
+            <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:79%;background:#F59E0B;border-radius:3px"></div>
+            </div>
+          </div>
+          <!-- Gap 3: Income Protection -->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:12px;color:#475569;font-weight:500">Income Protection</span>
+              <span style="font-size:12px;color:#10B981;font-weight:600">41 clients</span>
+            </div>
+            <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:60%;background:#10B981;border-radius:3px"></div>
+            </div>
+          </div>
+          <!-- Gap 4: Life Cover -->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:12px;color:#475569;font-weight:500">Life Cover</span>
+              <span style="font-size:12px;color:#a855f7;font-weight:600">38 clients</span>
+            </div>
+            <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:56%;background:#a855f7;border-radius:3px"></div>
+            </div>
+          </div>
+          <!-- Gap 5: Umbrella Liability -->
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:12px;color:#475569;font-weight:500">Umbrella Liability</span>
+              <span style="font-size:12px;color:#f97316;font-weight:600">29 clients</span>
+            </div>
+            <div style="height:5px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:43%;background:#f97316;border-radius:3px"></div>
+            </div>
+          </div>
           <a href="/whitelabel/admin/marketplace-admin.html" style="display:block;margin-top:12px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-align:center;font-size:12px;color:#10B981;font-weight:600;text-decoration:none">Manage marketplace products →</a>
         </div>
 
