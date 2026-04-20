@@ -1,280 +1,137 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyPoli.ai – Demo Access</title>
-  <meta name="robots" content="noindex, nofollow">
-   <!-- Optional: extra protection for Google specifically -->
-  <meta name="googlebot" content="noindex, nofollow, noarchive">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPoli.ai — Access Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#03050a;
-      --text:#f3f5f8;
-      --muted:#98a2b3;
-      --line:rgba(255,255,255,.12);
-      --accent:rgba(79,124,255,1);
-      --accent-glow:rgba(79,124,255,.3);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0B0C10;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: radial-gradient(circle at 50% 0%, rgba(16,185,129,0.12) 0%, rgba(11,12,16,0) 60%);
     }
-    *{box-sizing:border-box; margin:0; padding:0;}
-    html,body{
-      min-height:100%;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background:#02040a;
-      color:var(--text);
-      overflow-x:hidden;
+    .card {
+      background: rgba(18,20,26,0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(42,45,53,0.9);
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
     }
-    body{ position:relative; isolation:isolate; }
-
-    .bg-layer{ position:fixed; inset:0; pointer-events:none; }
-    .bg-gradient{
-      background:
-        radial-gradient(circle at 50% 70%, rgba(55,90,200,.12), transparent 30%),
-        radial-gradient(circle at 30% 40%, rgba(80,60,220,.06), transparent 25%);
-      filter:blur(20px);
-      z-index:-5;
-      animation: slowPulse 12s ease-in-out infinite alternate;
+    .logo { margin-bottom: 24px; }
+    .logo span { font-size: 28px; font-weight: 700; }
+    .logo .my   { color: #6B7280; font-weight: 300; }
+    .logo .poli { color: #F3F4F6; }
+    .logo .ai   { color: #10B981; }
+    h1 { font-size: 18px; font-weight: 600; color: #F3F4F6; margin-bottom: 6px; }
+    p  { font-size: 13px; color: #6B7280; margin-bottom: 28px; }
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #12141A;
+      border: 1px solid #2A2D35;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #F3F4F6;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      letter-spacing: 2px;
+      outline: none;
+      transition: border .2s;
+      margin-bottom: 14px;
     }
-    .bg-noise{
-      opacity:.06;
-      background-image: radial-gradient(rgba(255,255,255,.5) .5px, transparent .8px);
-      background-size:8px 8px;
-      mix-blend-mode:soft-light;
-      z-index:-3;
+    input:focus { border-color: #10B981; }
+    input.error { border-color: #EF4444; animation: shake .3s ease; }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #10B981;
+      color: #0B0C10;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 0 20px rgba(16,185,129,0.3);
+      transition: background .2s;
     }
-    .bg-vignette{
-      background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,.5) 100%);
-      z-index:-4;
+    button:hover { background: #0ea371; }
+    .error-msg {
+      font-size: 12px;
+      color: #EF4444;
+      margin-top: 10px;
+      display: none;
     }
-    @keyframes slowPulse{
-      from{opacity:.7; transform:scale(1)}
-      to{opacity:1; transform:scale(1.03)}
+    .hint {
+      font-size: 11px;
+      color: #4B5563;
+      margin-top: 20px;
     }
-
-    .page{
-      min-height:100vh;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      padding:48px 24px; position:relative; z-index:1;
-    }
-
-    .card{
-      width:min(520px, 100%);
-      border:1px solid var(--line);
-      border-radius:20px;
-      background:linear-gradient(180deg, rgba(12,16,26,.8), rgba(8,11,18,.7));
-      backdrop-filter:blur(20px);
-      -webkit-backdrop-filter:blur(20px);
-      padding:48px 40px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.03) inset,
-        0 30px 60px rgba(0,0,0,.4),
-        0 0 40px rgba(65,111,255,.06);
-      opacity:0;
-      animation: fadeUp .8s ease forwards .2s;
-    }
-
-    .logo{
-      font-weight:700; font-size:15px;
-      letter-spacing:-.01em; color:var(--muted);
-      margin-bottom:32px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .logo .dot{
-      width:8px; height:8px; background:var(--accent);
-      border-radius:50%; box-shadow:0 0 10px var(--accent-glow);
-    }
-
-    .card h1{
-      font-weight:650;
-      font-size:clamp(1.6rem, 4vw, 2rem);
-      letter-spacing:-.04em; line-height:1.15;
-      margin-bottom:10px;
-    }
-    .card p{
-      color:var(--muted); font-size:.95rem;
-      line-height:1.55; margin-bottom:28px;
-    }
-
-    .badge{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:5px 14px; border:1px solid rgba(79,124,255,.2);
-      border-radius:100px; font-size:12px; font-weight:600;
-      color:var(--accent); background:rgba(79,124,255,.06);
-      margin-bottom:24px;
-      text-transform:uppercase; letter-spacing:.06em;
-    }
-    .badge .pulse{
-      width:6px; height:6px; background:var(--accent);
-      border-radius:50%; animation: pulseDot 2s ease-in-out infinite;
-    }
-    @keyframes pulseDot{
-      0%,100%{ box-shadow:0 0 0 0 var(--accent-glow); }
-      50%{ box-shadow:0 0 0 6px rgba(79,124,255,0); }
-    }
-
-    .input-group{
-      display:flex; gap:8px; margin-bottom:16px;
-    }
-    .input-group input{
-      flex:1; padding:14px 16px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line); border-radius:12px;
-      color:var(--text); font-family:inherit;
-      font-size:.95rem; outline:none;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    .input-group input::placeholder{ color:rgba(255,255,255,.25); }
-    .input-group input:focus{
-      border-color:rgba(79,124,255,.35);
-      box-shadow:0 0 20px rgba(79,124,255,.08);
-    }
-    .input-group button{
-      padding:14px 22px; background:var(--accent);
-      color:#fff; border:none; border-radius:12px;
-      font-family:inherit; font-weight:600;
-      font-size:.9rem; cursor:pointer; white-space:nowrap;
-      transition:transform .15s, box-shadow .2s;
-      box-shadow:0 8px 20px rgba(79,124,255,.2);
-    }
-    .input-group button:hover{
-      transform:translateY(-1px);
-      box-shadow:0 12px 28px rgba(79,124,255,.25);
-    }
-
-    .hint{ font-size:.82rem; color:rgba(255,255,255,.2); }
-    .error-msg{
-      display:none; color:#ef4444;
-      font-size:.85rem; margin-bottom:12px;
-    }
-    .divider{
-      border:none; border-top:1px solid var(--line);
-      margin:28px 0;
-    }
-    .back-link{
-      display:inline-flex; align-items:center; gap:6px;
-      color:var(--muted); text-decoration:none;
-      font-size:.88rem; transition:color .2s;
-    }
-    .back-link:hover{ color:var(--text); }
-    .back-link svg{
-      width:14px; height:14px;
-      stroke:currentColor; fill:none; stroke-width:2;
-    }
-
-    @keyframes fadeUp{
-      from{opacity:0; transform:translateY(20px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-
-    @media(max-width:480px){
-      .card{ padding:36px 24px; }
-      .input-group{ flex-direction:column; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
     }
   </style>
 </head>
 <body>
-
-  <div class="bg-layer bg-gradient"></div>
-  <div class="bg-layer bg-vignette"></div>
-  <div class="bg-layer bg-noise"></div>
-
-  <div class="page">
-    <div class="card">
-      <div class="logo"><span class="dot"></span> MyPoli.ai</div>
-
-      <div class="badge"><span class="pulse"></span> Private Demo</div>
-
-      <h1>Platform Demo Access</h1>
-      <p>This demo is available by invitation only. Enter your access code to explore the MyPoli.ai platform.</p>
-
-      <div class="error-msg" id="errorMsg">Invalid access code. Please try again.</div>
-
-      <div class="input-group">
-        <input type="text" id="codeInput" placeholder="Enter access code" autocomplete="off" spellcheck="false">
-        <button onclick="checkCode()">Enter</button>
-      </div>
-
-      <p class="hint">Don't have a code? <a href="mailto:shane@mypoli.ai" style="color:var(--accent);text-decoration:none;">Request access</a></p>
-
-      <hr class="divider">
-
-      <a href="/" class="back-link">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to mypoli.ai
-      </a>
+  <div class="card">
+    <div class="logo">
+      <span class="my">my</span><span class="poli">poli</span><span class="ai">.ai</span>
     </div>
+    <h1>Access Demo</h1>
+    <p>Enter the access password to view the demo</p>
+    <input
+      type="password"
+      id="pwd"
+      placeholder="Enter password"
+      onkeydown="if(event.key==='Enter')check()"
+      autocomplete="off"
+    />
+    <button onclick="check()">Access Demo →</button>
+    <p class="error-msg" id="err">Incorrect password. Please try again.</p>
+    <p class="hint">Need access? Contact hello@mypoli.ai</p>
   </div>
 
   <script>
-    // Access codes mapped to labels for tracking
-    const ACCESS_CODES = {
-      'investor':       'Investor Access',
-      'demo':           'General Demo',
-      'designpartner1': 'Design Partner 1',
-      'designpartner2': 'Design Partner 2',
-      'designpartner3': 'Design Partner 3',
-      'designpartner4': 'Design Partner 4',
-      'designpartner5': 'Design Partner 5'
-    };
+    // ── SET YOUR PASSWORD HERE ──
+    const PASSWORD = "investor";
 
-    function logAccess(codeId, label) {
-      const timestamp = new Date().toISOString();
-      const referrer = document.referrer || 'direct';
-      const userAgent = navigator.userAgent;
+    // ── WHERE TO GO AFTER LOGIN ──
+    const REDIRECT = "dashboard.html";
 
-      // 1. Local log (visible via /admin-logs.html on your own device)
-      try {
-        const log = JSON.parse(localStorage.getItem('mypoli_access_log') || '[]');
-        log.push({ timestamp, codeId, label, referrer, userAgent });
-        localStorage.setItem('mypoli_access_log', JSON.stringify(log.slice(-200)));
-      } catch(e) {}
+    function check() {
+      const val = document.getElementById('pwd').value.trim().toLowerCase();
+      const input = document.getElementById('pwd');
+      const err = document.getElementById('err');
 
-      // 2. Image beacon — simple, reliable, works on any static host
-      // This hits a URL with the code as a query param. You'll see these
-      // hits in Vercel > Analytics > Web Vitals / Requests as 404s
-      // with the code name right in the URL.
-      try {
-        const img = new Image();
-        img.src = '/track/access/' + encodeURIComponent(codeId)
-                + '?label=' + encodeURIComponent(label)
-                + '&ts=' + encodeURIComponent(timestamp)
-                + '&ref=' + encodeURIComponent(referrer);
-      } catch(e) {}
-
-      // 3. Vercel Analytics event (if Vercel Analytics is enabled on your project)
-      if (window.va) {
-        window.va('event', { name: 'demo_access', data: { code: codeId, label: label } });
-      }
-
-      // 4. Cookie for session tracking
-      document.cookie = 'mypoli_access_code=' + codeId + '; path=/; max-age=86400; SameSite=Lax';
-    }
-
-    function checkCode() {
-      const input = document.getElementById('codeInput');
-      const code = input.value.trim().toLowerCase();
-      const error = document.getElementById('errorMsg');
-
-      if (ACCESS_CODES[code]) {
-        logAccess(code, ACCESS_CODES[code]);
-        // Small delay so tracking beacons fire before redirect
-        setTimeout(function(){
-          window.location.href = '/directory';
-        }, 150);
+      if (val === PASSWORD.toLowerCase()) {
+        // Store in sessionStorage — works across pages in same browser session
+        sessionStorage.setItem('mypoli_auth', 'true');
+        window.location.href = REDIRECT;
       } else {
-        error.style.display = 'block';
-        input.style.borderColor = '#ef4444';
-        setTimeout(function(){
-          input.style.borderColor = '';
-          error.style.display = 'none';
-        }, 3000);
+        input.classList.add('error');
+        err.style.display = 'block';
+        setTimeout(() => input.classList.remove('error'), 400);
+        input.value = '';
+        input.focus();
       }
     }
 
-    document.getElementById('codeInput').addEventListener('keydown', function(e){
-      if (e.key === 'Enter') checkCode();
-    });
+    // If already authenticated in this session, skip gate
+    if (sessionStorage.getItem('mypoli_auth') === 'true') {
+      window.location.href = REDIRECT;
+    }
   </script>
 
 </body>
