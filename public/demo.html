@@ -42,20 +42,20 @@
 
   <script>
     var CODES = {
-      "investor":       "https://www.mypoli.ai/directory.html",
-      "demo":           "https://www.mypoli.ai/directory.html",
-      "designpartner1": "https://www.mypoli.ai/directory.html",
-      "designpartner2": "https://www.mypoli.ai/directory.html",
-      "designpartner3": "https://www.mypoli.ai/directory.html",
-      "designpartner4": "https://www.mypoli.ai/directory.html",
-      "designpartner5": "https://www.mypoli.ai/directory.html"
+      "investor":       { url: "https://www.mypoli.ai/directory.html", label: "Investor" },
+      "demo":           { url: "https://www.mypoli.ai/directory.html", label: "Demo" },
+      "designpartner1": { url: "https://www.mypoli.ai/directory.html", label: "Goggin Insurances" },
+      "designpartner2": { url: "https://www.mypoli.ai/directory.html", label: "Campion Insurance" },
+      "designpartner3": { url: "https://www.mypoli.ai/directory.html", label: "Hastings Insurance" },
+      "designpartner4": { url: "https://www.mypoli.ai/directory.html", label: "Compass Insurance" },
+      "designpartner5": { url: "https://www.mypoli.ai/directory.html", label: "Dolmen Insurance" }
     };
 
     function check() {
-      var input    = document.getElementById('pwd');
-      var err      = document.getElementById('err');
-      var ok       = document.getElementById('ok');
-      var val      = input.value.trim().toLowerCase();
+      var input = document.getElementById('pwd');
+      var err   = document.getElementById('err');
+      var ok    = document.getElementById('ok');
+      var val   = input.value.trim().toLowerCase();
 
       err.textContent = '';
       ok.style.display = 'none';
@@ -65,15 +65,28 @@
         return;
       }
 
-      var redirect = CODES[val];
+      var entry = CODES[val];
 
-      if (redirect) {
+      if (entry) {
         ok.style.display = 'block';
         input.style.borderColor = '#10B981';
-        // Simple direct redirect — no storage needed
+
+        // Fire tracking to Vercel function (non-blocking)
+        try {
+          fetch('/api/log-access', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: val, label: entry.label })
+          });
+        } catch(e) {
+          // Silently fail — tracking never blocks the redirect
+        }
+
+        // Redirect after short delay
         setTimeout(function() {
-          window.location.href = redirect;
-        }, 600);
+          window.location.href = entry.url;
+        }, 700);
+
       } else {
         input.classList.add('shake');
         err.textContent = 'Incorrect access code. Please try again.';
