@@ -115,13 +115,13 @@
     // To add or change codes: update this object
     // Format: "code": "redirect_url"
     const ACCESS_CODES = {
-      "investor":       "https://www.mypoli.ai/directory",
-      "demo":           "https://www.mypoli.ai/directory",
-      "designpartner1": "https://www.mypoli.ai/directory",
-      "designpartner2": "https://www.mypoli.ai/directory",
-      "designpartner3": "https://www.mypoli.ai/directory",
-      "designpartner4": "https://www.mypoli.ai/directory",
-      "designpartner5": "https://www.mypoli.ai/directory"
+      "investor":       "https://www.mypoli.ai/directory.html",
+      "demo":           "https://www.mypoli.ai/directory.html",
+      "designpartner1": "https://www.mypoli.ai/directory.html",
+      "designpartner2": "https://www.mypoli.ai/directory.html",
+      "designpartner3": "https://www.mypoli.ai/directory.html",
+      "designpartner4": "https://www.mypoli.ai/directory.html",
+      "designpartner5": "https://www.mypoli.ai/directory.html"
     };
 
     function check() {
@@ -173,7 +173,7 @@
     if (alreadyAuth) {
       const code = localStorage.getItem('mypoli_code') ||
                    sessionStorage.getItem('mypoli_code') || 'investor';
-      const redirect = ACCESS_CODES[code] || 'https://www.mypoli.ai/directory';
+      const redirect = ACCESS_CODES[code] || 'https://www.mypoli.ai/directory.html';
       window.location.href = redirect;
     }
 
