@@ -10,14 +10,16 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:#0B0C10;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background-image:radial-gradient(circle at 50% 0%,rgba(16,185,129,.12) 0%,rgba(11,12,16,0) 60%)}
     .card{background:rgba(18,20,26,.92);backdrop-filter:blur(14px);border:1px solid rgba(42,45,53,.9);border-radius:20px;padding:40px 36px;width:90%;max-width:400px;text-align:center}
-    .my{font-size:30px;font-weight:300;color:#6B7280}.poli{font-size:30px;font-weight:700;color:#F3F4F6}.ai{font-size:30px;font-weight:700;color:#10B981}
+    .my{font-size:30px;font-weight:300;color:#6B7280}
+    .poli{font-size:30px;font-weight:700;color:#F3F4F6}
+    .ai{font-size:30px;font-weight:700;color:#10B981}
     .logo{margin-bottom:24px}
     h1{font-size:18px;font-weight:600;color:#F3F4F6;margin-bottom:6px}
     .sub{font-size:13px;color:#6B7280;margin-bottom:28px}
     input{width:100%;padding:12px 16px;background:#12141A;border:1px solid #2A2D35;border-radius:10px;font-size:14px;color:#F3F4F6;font-family:'Inter',sans-serif;text-align:center;letter-spacing:2px;outline:none;transition:border .2s;margin-bottom:14px}
     input:focus{border-color:#10B981}
     input.shake{animation:shake .3s ease;border-color:#EF4444}
-    button{width:100%;padding:12px;background:#10B981;color:#0B0C10;font-weight:700;font-size:14px;border:none;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 20px rgba(16,185,129,.3);transition:background .2s}
+    button{width:100%;padding:12px;background:#10B981;color:#0B0C10;font-weight:700;font-size:14px;border:none;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 20px rgba(16,185,129,.3)}
     button:hover{background:#0ea371}
     .err{font-size:12px;color:#EF4444;margin-top:10px;min-height:18px}
     .ok{display:none;font-size:13px;color:#10B981;margin-top:10px}
@@ -30,14 +32,16 @@
     <div class="logo"><span class="my">my</span><span class="poli">poli</span><span class="ai">.ai</span></div>
     <h1>Access Demo</h1>
     <p class="sub">Enter your access code to continue</p>
-    <input type="password" id="pwd" placeholder="Enter access code" onkeydown="if(event.key==='Enter')check()" autocomplete="off"/>
+    <input type="password" id="pwd" placeholder="Enter access code"
+      onkeydown="if(event.key==='Enter')check()" autocomplete="off"/>
     <button onclick="check()">Continue →</button>
     <p class="err" id="err"></p>
     <p class="ok" id="ok">✓ Access granted — redirecting...</p>
     <p class="hint">Need an access code? <a href="mailto:hello@mypoli.ai" style="color:#10B981;text-decoration:none">hello@mypoli.ai</a></p>
   </div>
+
   <script>
-    const CODES = {
+    var CODES = {
       "investor":       "https://www.mypoli.ai/directory.html",
       "demo":           "https://www.mypoli.ai/directory.html",
       "designpartner1": "https://www.mypoli.ai/directory.html",
@@ -46,54 +50,43 @@
       "designpartner4": "https://www.mypoli.ai/directory.html",
       "designpartner5": "https://www.mypoli.ai/directory.html"
     };
-    const LABELS = {
-      "investor":"Investor","demo":"Demo",
-      "designpartner1":"Goggin Insurances","designpartner2":"Campion Insurance",
-      "designpartner3":"Hastings Insurance","designpartner4":"Compass Insurance",
-      "designpartner5":"Dolmen Insurance"
-    };
 
-```
-function check() {
-  const input = document.getElementById('pwd');
-  const err = document.getElementById('err');
-  const ok = document.getElementById('ok');
-  const val = input.value.trim().toLowerCase();
-  err.textContent = ''; ok.style.display = 'none';
-  if (!val) { err.textContent = 'Please enter your access code.'; return; }
-  const redirect = CODES[val];
-  if (redirect) {
-    // Log access
-    const log = JSON.parse(localStorage.getItem('mypoli_access_log') || '[]');
-    log.push({ code: val, label: LABELS[val]||val, time: new Date().toISOString(), ua: navigator.userAgent });
-    localStorage.setItem('mypoli_access_log', JSON.stringify(log));
-    // Session only — requires password on every new browser session
-    sessionStorage.setItem('mypoli_auth', 'true');
-    sessionStorage.setItem('mypoli_code', val);
-    // Clear old persistent auth
-    localStorage.removeItem('mypoli_auth');
-    ok.style.display = 'block';
-    input.style.borderColor = '#10B981';
-    setTimeout(() => { window.location.href = redirect; }, 800);
-  } else {
-    input.classList.add('shake');
-    err.textContent = 'Incorrect access code. Please try again.';
-    setTimeout(() => { input.classList.remove('shake'); input.value = ''; input.focus(); }, 400);
-  }
-}
+    function check() {
+      var input    = document.getElementById('pwd');
+      var err      = document.getElementById('err');
+      var ok       = document.getElementById('ok');
+      var val      = input.value.trim().toLowerCase();
 
-// Only skip if authenticated in THIS session
-if (sessionStorage.getItem('mypoli_auth') === 'true') {
-  const code = sessionStorage.getItem('mypoli_code') || 'investor';
-  window.location.href = CODES[code] || 'https://www.mypoli.ai/directory.html';
-}
+      err.textContent = '';
+      ok.style.display = 'none';
 
-// Clear old localStorage auth on every gate visit
-localStorage.removeItem('mypoli_auth');
+      if (!val) {
+        err.textContent = 'Please enter your access code.';
+        return;
+      }
 
-window.addEventListener('load', () => document.getElementById('pwd').focus());
-```
+      var redirect = CODES[val];
 
+      if (redirect) {
+        ok.style.display = 'block';
+        input.style.borderColor = '#10B981';
+        // Simple direct redirect — no storage needed
+        setTimeout(function() {
+          window.location.href = redirect;
+        }, 600);
+      } else {
+        input.classList.add('shake');
+        err.textContent = 'Incorrect access code. Please try again.';
+        setTimeout(function() {
+          input.classList.remove('shake');
+          input.value = '';
+          input.focus();
+        }, 400);
+      }
+    }
+
+    document.getElementById('pwd').focus();
   </script>
+
 </body>
 </html>
