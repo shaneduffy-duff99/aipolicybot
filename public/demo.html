@@ -28,12 +28,11 @@
       text-align: center;
     }
     .logo { margin-bottom: 24px; }
-    .logo span { font-size: 28px; font-weight: 700; }
-    .logo .my   { color: #6B7280; font-weight: 300; }
-    .logo .poli { color: #F3F4F6; }
-    .logo .ai   { color: #10B981; }
+    .logo .my   { font-size: 30px; font-weight: 300; color: #6B7280; }
+    .logo .poli { font-size: 30px; font-weight: 700; color: #F3F4F6; }
+    .logo .ai   { font-size: 30px; font-weight: 700; color: #10B981; }
     h1 { font-size: 18px; font-weight: 600; color: #F3F4F6; margin-bottom: 6px; }
-    p  { font-size: 13px; color: #6B7280; margin-bottom: 28px; }
+    p.sub { font-size: 13px; color: #6B7280; margin-bottom: 28px; }
     input {
       width: 100%;
       padding: 12px 16px;
@@ -50,7 +49,7 @@
       margin-bottom: 14px;
     }
     input:focus { border-color: #10B981; }
-    input.error { border-color: #EF4444; animation: shake .3s ease; }
+    input.shake { animation: shake .3s ease; border-color: #EF4444; }
     button {
       width: 100%;
       padding: 12px;
@@ -63,19 +62,22 @@
       cursor: pointer;
       font-family: 'Inter', sans-serif;
       box-shadow: 0 0 20px rgba(16,185,129,0.3);
-      transition: background .2s;
+      transition: background .2s, transform .1s;
     }
     button:hover { background: #0ea371; }
+    button:active { transform: scale(0.98); }
     .error-msg {
       font-size: 12px;
       color: #EF4444;
       margin-top: 10px;
-      display: none;
+      min-height: 18px;
     }
-    .hint {
-      font-size: 11px;
-      color: #4B5563;
-      margin-top: 20px;
+    .hint { font-size: 11px; color: #4B5563; margin-top: 20px; }
+    .success {
+      display: none;
+      font-size: 13px;
+      color: #10B981;
+      margin-top: 10px;
     }
     @keyframes shake {
       0%,100% { transform: translateX(0); }
@@ -90,48 +92,95 @@
       <span class="my">my</span><span class="poli">poli</span><span class="ai">.ai</span>
     </div>
     <h1>Access Demo</h1>
-    <p>Enter the access password to view the demo</p>
-    <input
-      type="password"
-      id="pwd"
-      placeholder="Enter password"
-      onkeydown="if(event.key==='Enter')check()"
-      autocomplete="off"
-    />
-    <button onclick="check()">Access Demo →</button>
-    <p class="error-msg" id="err">Incorrect password. Please try again.</p>
-    <p class="hint">Need access? Contact hello@mypoli.ai</p>
+    <p class="sub">Enter your access code to continue</p>
+
+```
+<input
+  type="password"
+  id="pwd"
+  placeholder="Enter access code"
+  onkeydown="if(event.key==='Enter')check()"
+  autocomplete="off"
+/>
+<button onclick="check()">Continue →</button>
+<p class="error-msg" id="err"></p>
+<p class="success" id="ok">✓ Access granted — redirecting...</p>
+<p class="hint">Need an access code? Contact <a href="mailto:hello@mypoli.ai" style="color:#10B981;text-decoration:none">hello@mypoli.ai</a></p>
+```
+
   </div>
 
   <script>
-    // ── SET YOUR PASSWORD HERE ──
-    const PASSWORD = "investor";
-
-    // ── WHERE TO GO AFTER LOGIN ──
-    const REDIRECT = "https://www.mypoli.ai/directory";
+    // ── ACCESS CODES
+    // To add or change codes: update this object
+    // Format: "code": "redirect_url"
+    const ACCESS_CODES = {
+      "investor":       "https://www.mypoli.ai/directory",
+      "demo":           "https://www.mypoli.ai/directory",
+      "designpartner1": "https://www.mypoli.ai/directory",
+      "designpartner2": "https://www.mypoli.ai/directory",
+      "designpartner3": "https://www.mypoli.ai/directory",
+      "designpartner4": "https://www.mypoli.ai/directory",
+      "designpartner5": "https://www.mypoli.ai/directory"
+    };
 
     function check() {
-      const val = document.getElementById('pwd').value.trim().toLowerCase();
       const input = document.getElementById('pwd');
-      const err = document.getElementById('err');
+      const err   = document.getElementById('err');
+      const ok    = document.getElementById('ok');
+      const val   = input.value.trim().toLowerCase();
 
-      if (val === PASSWORD.toLowerCase()) {
-        // Store in sessionStorage — works across pages in same browser session
-        sessionStorage.setItem('mypoli_auth', 'true');
-        window.location.href = REDIRECT;
-      } else {
-        input.classList.add('error');
-        err.style.display = 'block';
-        setTimeout(() => input.classList.remove('error'), 400);
-        input.value = '';
+      err.textContent = '';
+      ok.style.display = 'none';
+
+      if (!val) {
+        err.textContent = 'Please enter your access code.';
         input.focus();
+        return;
+      }
+
+      const redirect = ACCESS_CODES[val];
+
+      if (redirect) {
+        // Store auth in both localStorage AND sessionStorage for maximum compatibility
+        localStorage.setItem('mypoli_auth', 'true');
+        localStorage.setItem('mypoli_code', val);
+        sessionStorage.setItem('mypoli_auth', 'true');
+        sessionStorage.setItem('mypoli_code', val);
+
+        ok.style.display = 'block';
+        input.style.borderColor = '#10B981';
+
+        setTimeout(() => {
+          window.location.href = redirect;
+        }, 800);
+      } else {
+        input.classList.add('shake');
+        err.textContent = 'Incorrect access code. Please try again.';
+        setTimeout(() => {
+          input.classList.remove('shake');
+          input.value = '';
+          input.focus();
+        }, 400);
       }
     }
 
-    // If already authenticated in this session, skip gate
-    if (sessionStorage.getItem('mypoli_auth') === 'true') {
-      window.location.href = REDIRECT;
+    // ── AUTO REDIRECT if already authenticated
+    const alreadyAuth =
+      localStorage.getItem('mypoli_auth') === 'true' ||
+      sessionStorage.getItem('mypoli_auth') === 'true';
+
+    if (alreadyAuth) {
+      const code = localStorage.getItem('mypoli_code') ||
+                   sessionStorage.getItem('mypoli_code') || 'investor';
+      const redirect = ACCESS_CODES[code] || 'https://www.mypoli.ai/directory';
+      window.location.href = redirect;
     }
+
+    // Focus input on load
+    window.addEventListener('load', () => {
+      document.getElementById('pwd').focus();
+    });
   </script>
 
 </body>
