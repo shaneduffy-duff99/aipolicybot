@@ -1,244 +1,227 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyPoli.ai – Access Logs</title>
-  <meta name="robots" content="noindex, nofollow">
-   <!-- Optional: extra protection for Google specifically -->
-  <meta name="googlebot" content="noindex, nofollow, noarchive">
+  <title>MyPoli.ai — Access Logs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      min-height:100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background:#0a0e1a;
-      color:#f3f5f8;
-      padding:32px 24px;
-    }
-    .wrap{ max-width:900px; margin:0 auto; }
-    h1{
-      font-size:1.5rem; font-weight:700;
-      margin-bottom:4px; letter-spacing:-.02em;
-    }
-    .sub{
-      color:#64748b; font-size:.9rem;
-      margin-bottom:24px;
-    }
-    .stats{
-      display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-      gap:12px; margin-bottom:24px;
-    }
-    .stat{
-      background:#111827;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:12px; padding:16px;
-    }
-    .stat-label{
-      font-size:.72rem; color:#64748b;
-      text-transform:uppercase; letter-spacing:.05em;
-      margin-bottom:6px;
-    }
-    .stat-value{
-      font-size:1.5rem; font-weight:700;
-    }
-    .actions{
-      display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;
-    }
-    .btn{
-      padding:8px 14px;
-      background:#1e293b;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:8px; color:#f3f5f8;
-      font-size:.82rem; cursor:pointer;
-      font-family:inherit;
-    }
-    .btn:hover{ background:#334155; }
-    .btn.danger{ background:#450a0a; border-color:rgba(239,68,68,.2); }
-    .btn.primary{ background:#4f7cff; border-color:#4f7cff; }
-
-    table{
-      width:100%; border-collapse:collapse;
-      background:#111827; border-radius:12px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.08);
-    }
-    th{
-      text-align:left; padding:12px 16px;
-      font-size:.72rem; color:#64748b;
-      text-transform:uppercase; letter-spacing:.05em;
-      background:#1e293b;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    td{
-      padding:12px 16px;
-      font-size:.85rem;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    tr:last-child td{ border-bottom:none; }
-    .code-tag{
-      display:inline-block;
-      padding:2px 10px; border-radius:100px;
-      font-size:.7rem; font-weight:600;
-      background:rgba(79,124,255,.12);
-      color:#7b9fff;
-      border:1px solid rgba(79,124,255,.2);
-    }
-    .code-tag.investor{ background:rgba(245,158,11,.12); color:#fbbf24; border-color:rgba(245,158,11,.2); }
-    .code-tag.demo{ background:rgba(100,116,139,.12); color:#94a3b8; border-color:rgba(100,116,139,.2); }
-    .code-tag.designpartner{ background:rgba(16,185,129,.12); color:#34d399; border-color:rgba(16,185,129,.2); }
-
-    .empty{
-      text-align:center; padding:48px;
-      color:#64748b;
-    }
-    .empty h3{ font-size:1rem; margin-bottom:8px; color:#94a3b8; }
-    .note{
-      margin-top:24px; padding:16px 20px;
-      background:rgba(79,124,255,.06);
-      border:1px solid rgba(79,124,255,.2);
-      border-radius:12px;
-      font-size:.82rem; color:#94a3b8;
-      line-height:1.6;
-    }
-    .note b{ color:#f3f5f8; }
-    .note code{
-      background:rgba(255,255,255,.08); padding:1px 6px;
-      border-radius:4px; font-size:.78rem;
-    }
-
-    @media(max-width:600px){
-      table{ font-size:.75rem; }
-      th,td{ padding:10px 8px; }
-      .hide-mobile{ display:none; }
-    }
+    body{background:#0B0C10;font-family:'Inter',sans-serif;min-height:100vh;color:#F3F4F6;padding:32px 24px;background-image:radial-gradient(circle at 50% 0%,rgba(16,185,129,.08) 0%,rgba(11,12,16,0) 50%)}
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid #2A2D35}
+    .logo .my{font-size:22px;font-weight:300;color:#6B7280}.logo .poli{font-size:22px;font-weight:700;color:#F3F4F6}.logo .ai{font-size:22px;font-weight:700;color:#10B981}
+    .badge{font-size:11px;padding:3px 10px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:20px;color:#10B981;font-weight:600}
+    h1{font-size:20px;font-weight:700;color:#F3F4F6;margin-bottom:4px}
+    .sub{font-size:13px;color:#6B7280}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+    .stat{background:rgba(18,20,26,.82);border:1px solid #2A2D35;border-radius:12px;padding:16px}
+    .stat-num{font-size:28px;font-weight:800;color:#F3F4F6}
+    .stat-label{font-size:11px;color:#6B7280;margin-top:4px}
+    .card{background:rgba(18,20,26,.82);border:1px solid #2A2D35;border-radius:12px;overflow:hidden;margin-bottom:20px}
+    .card-header{padding:14px 20px;border-bottom:1px solid #2A2D35;display:flex;align-items:center;justify-content:space-between}
+    .card-title{font-size:14px;font-weight:600;color:#F3F4F6}
+    table{width:100%;border-collapse:collapse}
+    th{padding:10px 20px;text-align:left;font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px;background:#12141A;border-bottom:1px solid #2A2D35}
+    td{padding:12px 20px;font-size:13px;border-bottom:1px solid rgba(42,45,53,.5)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+    .pill-green{background:rgba(16,185,129,.1);color:#10B981;border:1px solid rgba(16,185,129,.2)}
+    .pill-blue{background:rgba(59,130,246,.1);color:#3B82F6;border:1px solid rgba(59,130,246,.2)}
+    .pill-amber{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+    .empty{padding:40px 20px;text-align:center;color:#6B7280;font-size:13px}
+    .btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid #2A2D35;background:#12141A;color:#9CA3AF;transition:all .15s}
+    .btn:hover{color:#F3F4F6;border-color:#4B5563}
+    .btn-red{border-color:rgba(239,68,68,.3);color:#EF4444;background:rgba(239,68,68,.05)}
+    .btn-red:hover{background:rgba(239,68,68,.1)}
+    .admin-gate{position:fixed;inset:0;background:rgba(5,6,10,.95);backdrop-filter:blur(16px);z-index:100;display:flex;align-items:center;justify-content:center}
+    .admin-card{background:rgba(18,20,26,.95);border:1px solid #2A2D35;border-radius:16px;padding:32px;width:90%;max-width:360px;text-align:center}
+    .admin-card h2{font-size:17px;font-weight:700;margin-bottom:6px}
+    .admin-card p{font-size:13px;color:#6B7280;margin-bottom:20px}
+    .admin-input{width:100%;padding:10px 14px;background:#12141A;border:1px solid #2A2D35;border-radius:8px;font-size:13px;color:#F3F4F6;font-family:'Inter',sans-serif;text-align:center;letter-spacing:2px;outline:none;margin-bottom:12px}
+    .admin-input:focus{border-color:#10B981}
+    .admin-btn{width:100%;padding:11px;background:#10B981;color:#0B0C10;font-weight:700;font-size:13px;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif}
+    .admin-err{font-size:12px;color:#EF4444;margin-top:8px;min-height:16px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Access Logs</h1>
-    <p class="sub">Local log of demo access codes used on this device.</p>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-label">Total Logins</div>
-        <div class="stat-value" id="totalCount">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Investors</div>
-        <div class="stat-value" id="investorCount">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Design Partners</div>
-        <div class="stat-value" id="partnerCount">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Last 24h</div>
-        <div class="stat-value" id="recentCount">0</div>
-      </div>
-    </div>
+  <!-- ADMIN PASSWORD GATE -->
 
-    <div class="actions">
-      <button class="btn primary" onclick="refresh()">↻ Refresh</button>
-      <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn danger" onclick="clearLog()">✕ Clear Local Log</button>
-    </div>
-
-    <table id="logTable">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Code</th>
-          <th>Label</th>
-          <th class="hide-mobile">Referrer</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-
-    <div class="note">
-      <p style="margin-bottom:10px"><b>How tracking works:</b></p>
-      <p style="margin-bottom:8px">1. <b>Local log</b> — stored in this browser's localStorage (visible here). Resets if you clear site data.</p>
-      <p style="margin-bottom:8px">2. <b>Vercel Analytics</b> — if enabled, each access fires a <code>demo_access</code> event. View in Vercel Dashboard → Analytics.</p>
-      <p style="margin-bottom:8px">3. <b>Image beacon</b> — pings <code>/track/access/[code]</code>. These show up as 404s in Vercel → Logs with the code name in the URL path — useful for tracking across all devices.</p>
-      <p><b>Note:</b> The local log only shows accesses from this browser/device. For a full cross-device log, check Vercel Analytics or deploy a serverless function at <code>/api/log-access</code>.</p>
+  <div class="admin-gate" id="adminGate">
+    <div class="admin-card">
+      <div style="font-size:28px;margin-bottom:12px">🔐</div>
+      <h2>Admin Access</h2>
+      <p>Enter admin password to view access logs</p>
+      <input class="admin-input" type="password" id="adminPwd" placeholder="Admin password"
+        onkeydown="if(event.key==='Enter')adminCheck()" autocomplete="off"/>
+      <button class="admin-btn" onclick="adminCheck()">Access Logs →</button>
+      <p class="admin-err" id="adminErr"></p>
     </div>
   </div>
 
+  <!-- MAIN CONTENT -->
+
+  <div id="mainContent" style="display:none;max-width:1000px;margin:0 auto">
+
+```
+<div class="header">
+  <div>
+    <div class="logo" style="margin-bottom:8px">
+      <span class="my">my</span><span class="poli">poli</span><span class="ai">.ai</span>
+      <span class="badge" style="margin-left:10px;font-size:10px">Admin</span>
+    </div>
+    <h1>Access Logs</h1>
+    <p class="sub">Track who accessed the demo and when</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+    <button class="btn btn-red" onclick="clearLogs()">Clear Logs</button>
+    <a href="gate.html" style="text-decoration:none"><button class="btn">← Gate</button></a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats"></div>
+
+<!-- LOG TABLE -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Access History</span>
+    <span id="logCount" style="font-size:12px;color:#6B7280"></span>
+  </div>
+  <div id="logTable"></div>
+</div>
+```
+
+  </div>
+
   <script>
-    function getLog(){
-      try {
-        return JSON.parse(localStorage.getItem('mypoli_access_log') || '[]');
-      } catch(e) { return []; }
-    }
+    const ADMIN_PASSWORD = "mypoli2026";
 
-    function fmtTime(iso){
-      const d = new Date(iso);
-      return d.toLocaleString(undefined, { dateStyle:'short', timeStyle:'short' });
-    }
+    const CODE_COLORS = {
+      "investor":       "pill-green",
+      "demo":           "pill-blue",
+      "designpartner1": "pill-amber",
+      "designpartner2": "pill-amber",
+      "designpartner3": "pill-amber",
+      "designpartner4": "pill-amber",
+      "designpartner5": "pill-amber"
+    };
 
-    function codeClass(code){
-      if (code === 'investor') return 'investor';
-      if (code === 'demo') return 'demo';
-      if (code.startsWith('designpartner')) return 'designpartner';
-      return '';
-    }
-
-    function render(){
-      const log = getLog().slice().reverse();
-      const tbody = document.getElementById('tbody');
-
-      if (log.length === 0){
-        tbody.innerHTML = '<tr><td colspan="4" class="empty"><h3>No logins yet</h3><p>Access logs will appear here once someone enters a code.</p></td></tr>';
+    function adminCheck() {
+      const val = document.getElementById('adminPwd').value.trim();
+      const err = document.getElementById('adminErr');
+      if (val === ADMIN_PASSWORD) {
+        sessionStorage.setItem('mypoli_admin', 'true');
+        document.getElementById('adminGate').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        renderLogs();
       } else {
-        tbody.innerHTML = log.map(function(e){
-          return '<tr>'
-            + '<td>' + fmtTime(e.timestamp) + '</td>'
-            + '<td><span class="code-tag ' + codeClass(e.codeId) + '">' + e.codeId + '</span></td>'
-            + '<td>' + (e.label || '—') + '</td>'
-            + '<td class="hide-mobile">' + (e.referrer || 'direct') + '</td>'
-            + '</tr>';
-        }).join('');
+        err.textContent = 'Incorrect password.';
+        document.getElementById('adminPwd').value = '';
       }
+    }
+
+    function formatTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+             ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function getDeviceType(ua) {
+      if (/Mobile|iPhone|Android/.test(ua)) return '📱 Mobile';
+      if (/iPad|Tablet/.test(ua)) return '📲 Tablet';
+      return '💻 Desktop';
+    }
+
+    function renderLogs() {
+      const log = JSON.parse(localStorage.getItem('mypoli_access_log') || '[]').reverse();
+      const logCount = document.getElementById('logCount');
+      logCount.textContent = log.length + ' total entries';
 
       // Stats
-      document.getElementById('totalCount').textContent = log.length;
-      document.getElementById('investorCount').textContent = log.filter(function(e){ return e.codeId === 'investor'; }).length;
-      document.getElementById('partnerCount').textContent = log.filter(function(e){ return e.codeId && e.codeId.indexOf('designpartner') === 0; }).length;
+      const counts = {};
+      log.forEach(e => { counts[e.label] = (counts[e.label]||0) + 1; });
+      const uniqueCodes = Object.keys(counts).length;
+      const today = new Date().toDateString();
+      const todayCount = log.filter(e => new Date(e.time).toDateString() === today).length;
 
-      const dayAgo = Date.now() - 24*60*60*1000;
-      document.getElementById('recentCount').textContent = log.filter(function(e){
-        return new Date(e.timestamp).getTime() > dayAgo;
-      }).length;
+      document.getElementById('stats').innerHTML = `
+        <div class="stat"><div class="stat-num">${log.length}</div><div class="stat-label">Total accesses</div></div>
+        <div class="stat"><div class="stat-num">${uniqueCodes}</div><div class="stat-label">Unique codes used</div></div>
+        <div class="stat"><div class="stat-num">${todayCount}</div><div class="stat-label">Accesses today</div></div>
+        <div class="stat"><div class="stat-num">${log.length > 0 ? formatTime(log[0].time).split(' ').slice(0,3).join(' ') : '—'}</div><div class="stat-label">Most recent access</div></div>
+      `;
+
+      // Table
+      const tableDiv = document.getElementById('logTable');
+      if (log.length === 0) {
+        tableDiv.innerHTML = '<div class="empty">No access logs yet. Logs appear here when someone uses an access code.</div>';
+        return;
+      }
+
+      tableDiv.innerHTML = `
+        <table>
+          <thead><tr>
+            <th>#</th>
+            <th>Date & Time</th>
+            <th>Access Code</th>
+            <th>Partner / Label</th>
+            <th>Device</th>
+          </tr></thead>
+          <tbody>
+            ${log.map((e, i) => `
+              <tr>
+                <td style="color:#4B5563">${log.length - i}</td>
+                <td style="color:#9CA3AF">${formatTime(e.time)}</td>
+                <td><span style="font-family:monospace;font-size:12px;color:#F3F4F6">${e.code}</span></td>
+                <td><span class="pill ${CODE_COLORS[e.code]||'pill-blue'}">${e.label}</span></td>
+                <td style="color:#6B7280;font-size:12px">${getDeviceType(e.ua)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      `;
     }
 
-    function refresh(){ render(); }
+    function exportCSV() {
+      const log = JSON.parse(localStorage.getItem('mypoli_access_log') || '[]');
+      if (!log.length) { alert('No logs to export.'); return; }
+      const rows = [['#','Date','Time','Code','Label','Device']];
+      log.forEach((e, i) => {
+        const d = new Date(e.time);
+        rows.push([
+          i+1,
+          d.toLocaleDateString('en-GB'),
+          d.toLocaleTimeString('en-GB'),
+          e.code, e.label,
+          getDeviceType(e.ua)
+        ]);
+      });
+      const csv = rows.map(r => r.join(',')).join('\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'mypoli-access-logs.csv';
+      a.click();
+    }
 
-    function clearLog(){
-      if (confirm('Clear the local access log on this device? This cannot be undone.')) {
+    function clearLogs() {
+      if (confirm('Clear all access logs? This cannot be undone.')) {
         localStorage.removeItem('mypoli_access_log');
-        render();
+        renderLogs();
       }
     }
 
-    function exportCSV(){
-      const log = getLog();
-      if (log.length === 0){ alert('No logs to export.'); return; }
-      const header = 'Timestamp,Code,Label,Referrer,User Agent\n';
-      const rows = log.map(function(e){
-        return [e.timestamp, e.codeId, e.label, e.referrer, e.userAgent]
-          .map(function(v){ return '"' + String(v || '').replace(/"/g, '""') + '"'; })
-          .join(',');
-      }).join('\n');
-      const blob = new Blob([header + rows], { type:'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'mypoli-access-log-' + new Date().toISOString().split('T')[0] + '.csv';
-      a.click();
-      URL.revokeObjectURL(url);
+    // Check admin session
+    if (sessionStorage.getItem('mypoli_admin') === 'true') {
+      document.getElementById('adminGate').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      renderLogs();
+    } else {
+      setTimeout(() => document.getElementById('adminPwd').focus(), 100);
     }
-
-    render();
   </script>
+
 </body>
 </html>
