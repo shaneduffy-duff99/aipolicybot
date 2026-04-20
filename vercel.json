@@ -1,4 +1,10 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false
+  "version": 2,
+  "outputDirectory": "public",
+  "routes": [
+    { "src": "/gate", "dest": "/gate.html" },
+    { "src": "/gate.html", "dest": "/gate.html" },
+    { "src": "/", "dest": "/gate.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }
