@@ -2,6 +2,5 @@
   "name": "mypoli-ai",
   "version": "2.0.0",
   "description": "MyPoli.ai — Insurance Clarity Engine",
-  "private": true,
-  "type": "module"
+  "private": true
 }
