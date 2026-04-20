@@ -1,6 +1,7 @@
 {
-  "name": "aipolicybot-full",
+  "name": "mypoli-ai",
   "version": "2.0.0",
-  "description": "AIPolicyBot - Full product with dashboard, policies, coverage score and next of kin",
-  "private": true
+  "description": "MyPoli.ai — Insurance Clarity Engine",
+  "private": true,
+  "type": "module"
 }
